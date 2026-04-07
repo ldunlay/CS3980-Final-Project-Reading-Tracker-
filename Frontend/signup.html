@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sign Up | Book Nook</title>
+</head>
+
+<body>
+    <header class="header">
+        <h1>Book Nook</h1>
+    </header>
+
+    <section class="sidebar">
+        <a href="index.html">Home</a>
+        <a href="currentBooks.html">Current Books</a>
+        <a href="upNext.html">Up Next</a>
+        <a href="finishedBooks.html">Finished Books</a>
+        <a href="favoriteBooks.html">Favorite Books</a>
+    </section>
+
+    <main class="main auth-page">
+        <div class="auth-card">
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" placeholder="Your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a password" required>
+                </div>
+                <div id="message" class="auth-message"></div>
+                <button type="submit" class="primary-button">Create Account</button>
+            </form>
+            <p class="auth-footer">Already have an account? <a href="signin.html">Sign in</a></p>
+        </div>
+    </main>
+
+    <script>
+        const signupForm = document.getElementById('signupForm');
+        const messageBox = document.getElementById('message');
+
+        signupForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            messageBox.textContent = '';
+            messageBox.classList.remove('success');
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            const response = await fetch('/api/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                messageBox.classList.add('success');
+                messageBox.textContent = result.message || 'Account created successfully! Redirecting to sign in...';
+                setTimeout(() => {
+                    window.location.href = 'signin.html';
+                }, 1800);
+            } else {
+                messageBox.classList.remove('success');
+                messageBox.textContent = result.detail || result.message || 'Sign up failed.';
+            }
+        });
+    </script>
+</body>
+
+</html>

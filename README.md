@@ -7,8 +7,18 @@ Photo on main page: Photo by <a href="https://unsplash.com/@borodinanadi?utm_sou
 ___
 
 <strong> Steps for running app: </strong>
-1. Activate virtual environment by running .\venv\Scripts\Activate.ps1 in the terminal
+1. Create virtual environment(run this the first time you pull the code because the virtual environment isn't pushed to github):
 
-2. Run app after activating virtual environment by running in the terminal:  uvicorn main:app --reload
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
 
+2. Activate virtual environment by running .\venv\Scripts\Activate.ps1 in the terminal
+
+3. Run app after activating virtual environment by running in the terminal:  uvicorn main:app --reload
+
+MongoDB
+
+1. Copy `.env.example` to `.env`.
+2. Update `MONGODB_URI` and `MONGODB_DB` in `.env`.
       
