@@ -22,6 +22,7 @@ app = FastAPI()
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client[MONGODB_DB]
 users_collection = db["users"]
+books_collection = db["books"]
 
 
 class SignupData(BaseModel):
@@ -44,7 +45,9 @@ def root():
 async def signup(data: SignupData):
     existing_user = await users_collection.find_one({"email": data.email.lower()})
     if existing_user:
-        raise HTTPException(status_code=400, detail="A user with that email already exists.")
+        raise HTTPException(
+            status_code=400, detail="A user with that email already exists."
+        )
 
     hashed_password = pwd_context.hash(data.password)
     await users_collection.insert_one(
@@ -75,6 +78,26 @@ def health_check():
 @app.on_event("shutdown")
 def shutdown_event():
     client.close()
+
+
+@app.get("/current-books")
+def current_books():
+    return FileResponse(BASE_DIR / "Frontend" / "currentBooks.html")
+
+
+@app.get("/up-next")
+def up_next():
+    return FileResponse(BASE_DIR / "Frontend" / "upNext.html")
+
+
+@app.get("/finished-books")
+def finished_books():
+    return FileResponse(BASE_DIR / "Frontend" / "finishedBooks.html")
+
+
+@app.get("/favorite-books")
+def favorite_books():
+    return FileResponse(BASE_DIR / "Frontend" / "favoriteBooks.html")
 
 
 app.mount("/", StaticFiles(directory="Frontend", html=True), name="frontend")
