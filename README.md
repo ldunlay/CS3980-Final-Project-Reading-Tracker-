@@ -1,8 +1,6 @@
 # CS3980 Final Project (Reading Tracker)
 
-Dashboard styling source: https://www.youtube.com/watch?v=NnniXasJIpY and claude
-
-Photo on main page: Photo by <a href="https://unsplash.com/@borodinanadi?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">nadi borodina</a> on <a href="https://unsplash.com/photos/white-and-pink-flowers-on-white-printer-paper-xkx93Q2Pe8E?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+We developed a comprehensive and user-friendly book tracking application that allows users to organize book lists, track their reading progress, write reviews, obtain statistics on reading habits, and set reading goals
 
 ___
 
@@ -21,4 +19,12 @@ MongoDB
 
 1. Copy `.env.example` to `.env`.
 2. Update `MONGODB_URI` and `MONGODB_DB` in `.env`.
+
+___
+
+## Sources
+
+Dashboard styling source: https://www.youtube.com/watch?v=NnniXasJIpY and ClaudeAI
+
+Photo on main page: Photo by <a href="https://unsplash.com/@borodinanadi?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">nadi borodina</a> on <a href="https://unsplash.com/photos/white-and-pink-flowers-on-white-printer-paper-xkx93Q2Pe8E?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
       
