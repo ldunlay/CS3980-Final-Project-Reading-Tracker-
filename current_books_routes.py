@@ -5,11 +5,9 @@ from fastapi import APIRouter, HTTPException, Path, status
 from fastapi.responses import FileResponse
 
 from models import CurrentBook, CurrentBookRequest
-from pathlib import Path
+
 
 current_books_router = APIRouter()
-
-BASE_DIR = Path(__file__).resolve().parent
 
 
 @current_books_router.get("")
