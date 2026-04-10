@@ -6,6 +6,7 @@ class CurrentBook(BaseModel):
     id: int
     title: str
     author: str
+    num_pages: int | None = None
     genre: str | None = None
     isbn: str | None = None
     publish_date: str | None = None
@@ -15,6 +16,7 @@ class CurrentBook(BaseModel):
 class CurrentBookRequest(BaseModel):
     title: str
     author: str
+    num_pages: int | None = None
     genre: str | None = None
     isbn: str | None = None
     publish_date: str | None = None
