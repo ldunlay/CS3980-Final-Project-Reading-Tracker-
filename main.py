@@ -9,6 +9,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 
+from current_books_routes import current_books_router
+
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
@@ -78,5 +80,9 @@ def health_check():
 def shutdown_event():
     client.close()
 
+
+app.include_router(
+    current_books_router, tags=["Current Books"], prefix="/api/current-books"
+)  # routing for current books api
 
 app.mount("/", StaticFiles(directory="Frontend", html=True), name="frontend")
