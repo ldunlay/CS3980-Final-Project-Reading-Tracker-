@@ -44,7 +44,9 @@ def root():
 async def signup(data: SignupData):
     existing_user = await users_collection.find_one({"email": data.email.lower()})
     if existing_user:
-        raise HTTPException(status_code=400, detail="A user with that email already exists.")
+        raise HTTPException(
+            status_code=400, detail="A user with that email already exists."
+        )
 
     hashed_password = pwd_context.hash(data.password)
     await users_collection.insert_one(

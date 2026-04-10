@@ -2,26 +2,20 @@ from pydantic import BaseModel  # for validation
 from datetime import date
 
 
-class Book(BaseModel):
+class CurrentBook(BaseModel):
     id: int
     title: str
     author: str
     genre: str | None = None
     isbn: str | None = None
     publish_date: str | None = None
-
-    list_type: str  # currentBooks, upNext, finished
-    startDate: date | None = None  # only used for current and finished books
-    finishDate: date | None = None  # only used for finished books
+    startDate: date | None = None
 
 
-class BookRequest(BaseModel):
+class CurrentBookRequest(BaseModel):
     title: str
     author: str
     genre: str | None = None
     isbn: str | None = None
     publish_date: str | None = None
-
-    list_type: str  # currentBooks, upNext, finished
-    startDate: date | None = None  # only used for current and finished books
-    finishDate: date | None = None  # only used for finished books
+    startDate: date | None = None
