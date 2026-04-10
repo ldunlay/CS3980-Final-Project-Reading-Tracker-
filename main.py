@@ -22,7 +22,7 @@ app = FastAPI()
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client[MONGODB_DB]
 users_collection = db["users"]
-books_collection = db["books"]  # this will store our books
+books_collection = db["books"]
 
 
 class SignupData(BaseModel):
