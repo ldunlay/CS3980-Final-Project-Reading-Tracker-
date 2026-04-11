@@ -28,6 +28,7 @@ uvicorn main:app --reload
 **MongoDB**
 
 **1.** Copy `.env.example` to `.env`.
+
 **2.** Update `MONGODB_URI` and `MONGODB_DB` in `.env`.
 
 ___
