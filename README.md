@@ -1,24 +1,34 @@
 # CS3980 Final Project (Reading Tracker)
 
-We developed a comprehensive and user-friendly book tracking application that allows users to organize book lists, track their reading progress, write reviews, obtain statistics on reading habits, and set reading goals
+We developed a comprehensive and user-friendly book tracking application that allows users to organize book lists, track their reading progress, write reviews, obtain statistics on reading habits, and set reading goals.
 
 ___
 
 <strong> Steps for running app: </strong>
-1. Create virtual environment(run this the first time you pull the code because the virtual environment isn't pushed to github):
 
+**1.** Create virtual environment (run this the first time you pull the code because the virtual environment isn't pushed to GitHub):
+
+```bash
 python -m venv venv
+```
+```bash
 .\venv\Scripts\activate
+```
+```bash
 pip install -r requirements.txt
+```
 
-2. Activate virtual environment by running .\venv\Scripts\Activate.ps1 in the terminal
+**2.** Activate virtual environment by running `.\venv\Scripts\Activate.ps1` in the terminal:
 
-3. Run app after activating virtual environment by running in the terminal:  uvicorn main:app --reload
+**3.** Run app after activating virtual environment by running in the terminal:
+```bash
+uvicorn main:app --reload
+```
 
-MongoDB
+**MongoDB**
 
-1. Copy `.env.example` to `.env`.
-2. Update `MONGODB_URI` and `MONGODB_DB` in `.env`.
+**1.** Copy `.env.example` to `.env`.
+**2.** Update `MONGODB_URI` and `MONGODB_DB` in `.env`.
 
 ___
 
