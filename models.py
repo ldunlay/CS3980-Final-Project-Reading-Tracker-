@@ -10,7 +10,7 @@ class CurrentBook(BaseModel):
     genre: str | None = None
     isbn: str | None = None
     publish_date: str | None = None
-    startDate: date | None = None
+    startDate: date
 
 
 class CurrentBookRequest(BaseModel):
