@@ -2,6 +2,8 @@
 
 const api = 'http://127.0.0.1:8000/api/current-books'; // api endpoint for current books list
 
+
+// button for adding new book to current reading list
 document.getElementById('add-btn').addEventListener('click', (e) => {
     e.preventDefault();
 

@@ -8,9 +8,11 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
     <title>Book Nook</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
 </head>
 
-<body>
+<body class="py-4">
 
     <header class="header">
         <h1>Current Books</h1>
@@ -24,20 +26,97 @@
         <a href="favoriteBooks.html">Favorite Books</a>
     </section>
 
-    <body class="py-4">
-        <div class="app mx-auto">
-            <div class="h1">Current Book List</div>
-            <div class="d-flex justify-content-end mb-3">
-                <button id="openNewModal" data-bs-toggle="modal" data-bs-target="#modal-add">
 
-                    Add New Book
-                </button>
-            </div>
-            <div id="books" class="overflow-y-auto"></div>
+    <div class="app mx-auto">
+        <br>
+        <br>
+        <div class="d-flex justify-content-end mb-3">
+            <button id="openNewModal" data-bs-toggle="modal" data-bs-target="#modal-add">
+
+                Add New Book
+            </button>
         </div>
+        <div id="books" class="overflow-y-auto"></div>
+    </div>
+
+    <!-- modal dialog for adding -->
+    <div id="modal-add" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add a new Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+                <div class="modal-body">
+                    <div id="new-book-form">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="genre" class="form-label">Genre</label>
+                            <input type="text" class="form-control" id="genre" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="author" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="author" />
+                        </div>
 
 
-        <script src="currentBooks.js"></script>
-    </body>
+
+                        <div class="mb-3">
+                            <label for="num_pages" class="form-label">Number of Pages</label>
+                            <input type="int" class="form-control" id="num_pages" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="isbn" class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="isbn" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="publish_date" class="form-label">Publish Date</label>
+                            <input type="date" class="form-control" id="publish_date" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="startdate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startdate" />
+                        </div>
+
+
+
+
+
+
+                        <div class="text-danger" id="msg"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="close-add-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button id="add-btn" type="button" class="btn btn-primary">
+                        Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+
+    <script src="currentBooks.js"></script>
+
+</body>
 
 </html>
