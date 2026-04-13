@@ -1,23 +1,24 @@
-from pydantic import BaseModel  # for validation
 from datetime import date
+from pydantic import BaseModel
+from beanie import Document
 
 
-class CurrentBook(BaseModel):
-    id: int
+class CurrentBook(Document):  # inherits from Document for mapping to MongoDB
+
     title: str
     author: str
     num_pages: int | None = None
     genre: str | None = None
     isbn: str | None = None
-    publish_date: str | None = None
+    publish_date: date | None = None
     startDate: date
 
 
-class CurrentBookRequest(BaseModel):
+class CurrentBookRequest(BaseModel):  # inherits from BaseModel for input validation
     title: str
     author: str
     num_pages: int | None = None
     genre: str | None = None
     isbn: str | None = None
-    publish_date: str | None = None
+    publish_date: date | None = None
     startDate: date | None = None
