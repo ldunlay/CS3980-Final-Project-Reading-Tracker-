@@ -8,6 +8,8 @@ from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorClient
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
+from beanie import init_beanie
+from models import CurrentBook
 
 from current_books_routes import current_books_router
 
@@ -79,6 +81,15 @@ def health_check():
 @app.on_event("shutdown")
 def shutdown_event():
     client.close()
+
+
+async def init():  # init for beanie allows document object mapping
+    await init_beanie(database=db, document_models=[CurrentBook])
+
+
+@app.on_event("startup")
+async def startup():
+    await init()
 
 
 app.include_router(
