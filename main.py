@@ -9,9 +9,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 from beanie import init_beanie
-from models import CurrentBook
+from models import CurrentBook, UpNext
 
 from current_books_routes import current_books_router
+from upnext_routes import upnext_router
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
@@ -76,15 +77,28 @@ async def signin(data: SigninData):
 @app.get("/api/health")
 def health_check():
     return {"status": "ok"}
+    
+
+@app.on_event("shutdown")
+def shutdown_event():
+    client.close()
 
 
 async def init():  # init for beanie allows document object mapping
-    await init_beanie(database=db, document_models=[CurrentBook])
+    await init_beanie(database=db, document_models=[CurrentBook, UpNext])
 
+
+@app.on_event("startup")
+async def startup():
+    await init()
 
 
 app.include_router(
     current_books_router, tags=["Current Books"], prefix="/api/current-books"
 )  # routing for current books api
+
+app.include_router(
+    upnext_router, tags=["Up Next"], prefix="/api/up-next"
+)  # routing for up next api
 
 app.mount("/", StaticFiles(directory="Frontend", html=True), name="frontend")
