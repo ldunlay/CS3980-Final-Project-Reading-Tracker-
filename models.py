@@ -13,6 +13,9 @@ class CurrentBook(Document):  # inherits from Document for mapping to MongoDB
     publish_date: date | None = None
     startDate: date
 
+    class Settings:
+        name = "CurrentBook"  # making sure it maps to the correct mongo db collection
+
 
 class CurrentBookRequest(BaseModel):  # inherits from BaseModel for input validation
     title: str
@@ -21,7 +24,7 @@ class CurrentBookRequest(BaseModel):  # inherits from BaseModel for input valida
     genre: str | None = None
     isbn: str | None = None
     publish_date: date | None = None
-    startDate: date | None = None
+    startDate: date
 
 
 class UpNext(Document):  # inherits from Document for mapping to MongoDB
@@ -33,6 +36,9 @@ class UpNext(Document):  # inherits from Document for mapping to MongoDB
     isbn: str | None = None
     publish_date: date | None = None
     added_date: date | None = None
+
+    class Settings:
+        name = "UpNext"  # making sure it maps to the correct mongo db collection
 
 
 class UpNextRequest(BaseModel):  # inherits from BaseModel for input validation
