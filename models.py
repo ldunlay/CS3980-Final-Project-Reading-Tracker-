@@ -11,6 +11,7 @@ class CurrentBook(Document):  # inherits from Document for mapping to MongoDB
     genre: str | None = None
     isbn: str | None = None
     publish_date: date | None = None
+    current_page: int | None = None
     startDate: date
 
     class Settings:
@@ -24,6 +25,7 @@ class CurrentBookRequest(BaseModel):  # inherits from BaseModel for input valida
     genre: str | None = None
     isbn: str | None = None
     publish_date: date | None = None
+    current_page: int | None = None
     startDate: date
 
 

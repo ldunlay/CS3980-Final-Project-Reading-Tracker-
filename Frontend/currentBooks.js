@@ -18,6 +18,7 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
     const num_pagesInput = document.getElementById('num_pages');
     const isbnInput = document.getElementById('isbn');
     const publish_dateInput = document.getElementById('publish_date');
+    const current_pageInput = document.getElementById('current_page');
 
     // Validating that user enters title, author, and startdate. The rest can be empty
     if (!titleInput.value || !authorInput.value || !startDateInput.value) {
@@ -48,6 +49,8 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
             num_pagesInput.value = "";
             isbnInput.value = "";
             publish_dateInput.value = "";
+            current_pageInput.value = "";
+
 
         }
     };
@@ -56,17 +59,82 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
     // parseInt source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
-    xhr.send(JSON.stringify({ title: titleInput.value, genre: genreInput.value, author: authorInput.value, startDate: startDateInput.value, publish_date: publish_dateInput.value, isbn: isbnInput.value, num_pages: parseInt(num_pagesInput.value) }));
+    xhr.send(JSON.stringify({ title: titleInput.value, genre: genreInput.value, author: authorInput.value, startDate: startDateInput.value, publish_date: publish_dateInput.value, isbn: isbnInput.value, num_pages: parseInt(num_pagesInput.value), current_page: parseInt(current_pageInput.value) }));
 });
 
 
+// button for editing book in current reading list
+document.getElementById('edit-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const msgDiv = document.getElementById('msgEdit');
+    const titleInput = document.getElementById('titleEdit');
+    const genreInput = document.getElementById('genreEdit');
+    const authorInput = document.getElementById('authorEdit');
+    const startDateInput = document.getElementById('startDateEdit');
+    const num_pagesInput = document.getElementById('num_pagesEdit');
+    const isbnInput = document.getElementById('isbnEdit');
+    const publish_dateInput = document.getElementById('publish_dateEdit');
+    const current_pageInput = document.getElementById('current_pageEdit');
+
+    // Validating that user enters title, author, and startdate. The rest can be empty
+    if (!titleInput.value || !authorInput.value || !startDateInput.value) {
+        msgDiv.innerHTML =
+            'Please provide non-empty Title, Author, and StartDate when creating a new current book';
+        return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+        if (xhr.status === 200) {
+            const newBook = JSON.parse(xhr.response);
+            const book = data.find((x) => x._id == bookIdInEdit);
+            book.title = newBook.title;
+            book.genre = newBook.genre;
+            book.author = newBook.author
+            book.startDate = newBook.startDate
+            book.current_page = newBook.current_page
+            renderCurrentBooks(data);
+
+            // close modal dialog
+            const closeBtn = document.getElementById('close-edit-modal');
+            closeBtn.click();
+
+            // clean up
+            msgDiv.innerHTML = '';
+            titleInput.value = '';
+            genreInput.value = '';
+            authorInput.value = '';
+            startDateInput.value = '';
+            current_pageInput.value = "";
+
+        }
+    };
+
+    xhr.open('PUT', api + '/' + bookIdInEdit, true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+    xhr.send(JSON.stringify({ title: titleInput.value, genre: genreInput.value, author: authorInput.value, startDate: startDateInput.value, publish_date: publish_dateInput.value, isbn: isbnInput.value, num_pages: parseInt(num_pagesInput.value), current_page: parseInt(current_pageInput.value) }));
+});
+
+
+function setBookInEdit(id) {
+    console.log("id is:", id);
+    bookIdInEdit = id;
+}
+
+
+
+
+
+// funtion for rendering the current books list
 function renderCurrentBooks(data) {
     const bookDiv = document.getElementById('books');
     bookDiv.innerHTML = '';
 
     data.forEach(book => {
         bookDiv.innerHTML += `
-    <div id="book-${book.id}" class="book-box">
+    <div id="book-${book._id}" class="book-box">
         <div class="fw-bold fs-3">Title: ${book.title}</div>
         <pre class="text-secondary ps-2">Genre: ${book.genre}</pre>
         <pre class="text-secondary ps-2">Author: ${book.author}</pre>
@@ -78,12 +146,12 @@ function renderCurrentBooks(data) {
           <button type="button" class="btn btn-success btn-sm"
             data-bs-toggle="modal"
             data-bs-target="#modal-edit"
-            onClick="setBookInEdit(${book.id})"
+            onClick="setBookInEdit('${book._id}')"
           >
             Edit
           </button>
           <button type="button" class="btn btn-danger btn-sm"
-            onClick="deleteBook(${book.id})"
+            onClick="deleteBook('${book._id}')"
           >
             Delete
           </button>
@@ -93,6 +161,7 @@ function renderCurrentBooks(data) {
     });
 }
 
+// function that gets all books
 function getAllBooks() {
     const xhr = new XMLHttpRequest();
     xhr.onload = () => {
