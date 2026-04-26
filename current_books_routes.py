@@ -53,3 +53,16 @@ async def edit_current_book(
 
     await book.save()  # save it to mongodb
     return book
+
+
+@current_books_router.delete("/{book_id}", status_code=204)
+async def delete_current_book(book_id: PydanticObjectId):
+    book = await CurrentBook.get(book_id)  # finding the current book by its id
+
+    if not book:
+        raise HTTPException(
+            status_code=404, detail="Book not found"
+        )  # if it is not found, raise error
+
+    await book.delete()  # delete from mongo db
+    return

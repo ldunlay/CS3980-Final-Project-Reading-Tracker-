@@ -118,6 +118,23 @@ document.getElementById('edit-btn').addEventListener('click', (e) => {
 });
 
 
+function deleteBook(id) {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+        if (xhr.status == 204) {
+            data = data.filter((x) => x._id != id);
+            renderCurrentBooks(data);
+        }
+    };
+
+    xhr.open('DELETE', api + '/' + id, true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+    xhr.send();
+}
+
+
+
 function setBookInEdit(id) {
     console.log("id is:", id);
     bookIdInEdit = id;
