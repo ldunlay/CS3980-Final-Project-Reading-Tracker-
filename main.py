@@ -10,6 +10,8 @@ from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 from beanie import init_beanie
 from models import CurrentBook, UpNext
+import logging
+from logging_setup import setup_logging
 
 from current_books_routes import current_books_router
 from upnext_routes import upnext_router
@@ -27,6 +29,10 @@ app = FastAPI()
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client[MONGODB_DB]
 users_collection = db["users"]
+
+# for logging
+setup_logging()
+logger = logging.getLogger(__name__)
 
 
 class SignupData(BaseModel):
@@ -77,10 +83,11 @@ async def signin(data: SigninData):
 @app.get("/api/health")
 def health_check():
     return {"status": "ok"}
-    
+
 
 @app.on_event("shutdown")
 def shutdown_event():
+    logger.info("Application shutting down...")
     client.close()
 
 
@@ -90,8 +97,11 @@ async def init():  # init for beanie allows document object mapping
 
 @app.on_event("startup")
 async def startup():
+    logger.info("Application starts up...")
     await init()
 
+
+# register routes
 
 app.include_router(
     current_books_router, tags=["Current Books"], prefix="/api/current-books"
