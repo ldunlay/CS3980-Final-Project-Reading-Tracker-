@@ -5,6 +5,12 @@ const api = 'http://127.0.0.1:8000/api/current-books'; // api endpoint for curre
 let data = [];
 let bookIdInEdit = 0;
 
+// button for downloading current books
+document.getElementById('download-btn').addEventListener('click', (e) => {
+    window.location.href = api + '/download';
+});
+
+
 
 // button for adding new book to current reading list
 document.getElementById('add-btn').addEventListener('click', (e) => {
@@ -121,7 +127,7 @@ document.getElementById('edit-btn').addEventListener('click', (e) => {
 function deleteBook(id) {
     const xhr = new XMLHttpRequest();
     xhr.onload = () => {
-        if (xhr.status == 204) {
+        if (xhr.status == 200) {
             data = data.filter((x) => x._id != id);
             renderCurrentBooks(data);
         }

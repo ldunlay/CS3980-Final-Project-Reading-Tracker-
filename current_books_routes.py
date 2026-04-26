@@ -1,14 +1,16 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, HTTPException
-
+from fastapi import APIRouter, HTTPException, File, UploadFile
 
 from models import CurrentBook, CurrentBookRequest
-
+from fastapi.responses import FileResponse
+from pathlib import Path
+import json
 
 import logging
 
 logger = logging.getLogger(__name__)
 
+DOWNLOADS_DIR = Path("downloads")
 
 current_books_router = APIRouter()
 
@@ -79,3 +81,24 @@ async def delete_current_book(book_id: PydanticObjectId):
     await book.delete()  # delete from mongo db
     logger.info(f"\t Book #[{book_id}] is deleted.")
     return {"message": "Book deleted successfully."}
+
+
+# sources for file download
+# https://fastapi.tiangolo.com/advanced/custom-response/#orjson-or-response-model
+# https://oneuptime.com/blog/post/2026-02-03-fastapi-file-downloads/view
+# claude for debugging
+
+
+@current_books_router.get("/download")
+async def download_current_books():
+    books = (
+        await CurrentBook.find_all().to_list()
+    )  # get all of our current books in a list
+    file_path = DOWNLOADS_DIR / "current_books.json"  # save to the downloads folder
+
+    with open(file_path, "w") as f:  # open the file path and write the books to is
+        json.dump([book.dict() for book in books], f, default=str)
+
+    return FileResponse(
+        path=file_path, filename="current_books.json", media_type="application/json"
+    )

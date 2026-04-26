@@ -197,3 +197,7 @@ button:disabled {
     margin-bottom: 0.5rem;
     color: #666;
 }
+
+.d-flex {
+    gap: 0.5rem;
+}
