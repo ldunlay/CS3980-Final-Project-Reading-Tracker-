@@ -164,7 +164,8 @@ function renderCurrentBooks(data) {
         <pre class="text-secondary ps-2">Number of Pages: ${book.num_pages}</pre>
         <pre class="text-secondary ps-2">ISBN: ${book.isbn}</pre>
         <pre class="text-secondary ps-2">Publish Date: ${book.publish_date}</pre>
-        <pre class="text-secondary ps-2">StartDate: ${book.startDate}</pre>
+        <pre class="text-secondary ps-2">Start Date: ${book.startDate}</pre>
+        <pre class="text-secondary ps-2">Current Page: ${book.current_page}</pre>
         <div>
           <button type="button" class="btn btn-success btn-sm"
             data-bs-toggle="modal"
