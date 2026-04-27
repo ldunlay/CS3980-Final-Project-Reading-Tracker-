@@ -11,16 +11,20 @@ ___
 ```bash
 python -m venv venv
 ```
+**2.** Activate the virtual environment:
 ```bash
 .\venv\Scripts\activate
 ```
+or
+```bash
+.\venv\Scripts\Activate.ps1
+```
+**3.** Download the required packages:
 ```bash
 pip install -r requirements.txt
 ```
 
-**2.** Activate virtual environment by running `.\venv\Scripts\Activate.ps1` in the terminal:
-
-**3.** Run app after activating virtual environment by running in the terminal:
+**4.** Run app after activating virtual environment by running in the terminal:
 ```bash
 uvicorn main:app --reload
 ```
