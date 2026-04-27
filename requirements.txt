@@ -5,3 +5,5 @@ passlib
 python-dotenv
 email-validator
 beanie==1.26.0
+resend
+python-dotenv
