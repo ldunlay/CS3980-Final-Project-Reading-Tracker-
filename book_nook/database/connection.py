@@ -5,7 +5,7 @@ from beanie import init_beanie
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from models import CurrentBook, UpNext
+from models import CurrentBook, UpNext, User
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 load_dotenv(BASE_DIR / ".env")
@@ -19,7 +19,7 @@ users_collection = db["users"]
 
 
 async def init_database():
-    await init_beanie(database=db, document_models=[CurrentBook, UpNext])
+    await init_beanie(database=db, document_models=[CurrentBook, UpNext, User])
 
 
 def close_database():

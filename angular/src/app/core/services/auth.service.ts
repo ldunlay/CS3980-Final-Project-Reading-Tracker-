@@ -34,7 +34,14 @@ export class AuthService {
   });
 
   signin(email: string, password: string): Observable<SigninResponse> {
-    return this.http.post<SigninResponse>(signin_url, { email, password }).pipe(
+    const body = new URLSearchParams({
+      username: email,
+      password,
+    });
+
+    return this.http.post<SigninResponse>(signin_url, body.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }).pipe(
       tap((response) => {
         const user: AppUser = {
           username: response.username || email.toLowerCase(),

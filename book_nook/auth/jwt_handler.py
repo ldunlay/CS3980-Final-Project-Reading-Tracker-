@@ -22,6 +22,12 @@ class TokenData(BaseModel):
 
 
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=20)):
+    if not SECRET_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="JWT secret key is not configured.",
+        )
+
     payload = data.copy()
     expire = datetime.now(timezone.utc) + expires_delta
     payload.update({"exp": expire})
@@ -30,6 +36,12 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes
 
 
 def verify_access_token(token: str) -> TokenData | None:
+    if not SECRET_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="JWT secret key is not configured.",
+        )
+
     try:
         data = jwt.decode(token, SECRET_KEY, [ALGORITHM])
 
