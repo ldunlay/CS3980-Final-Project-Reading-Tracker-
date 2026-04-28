@@ -6,10 +6,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorClient
-from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 from beanie import init_beanie
 from models import CurrentBook, UpNext
+from auth.hash_password import hash_password, verify_password
 import logging
 from logging_setup import setup_logging
 
@@ -21,8 +21,6 @@ load_dotenv(BASE_DIR / ".env")
 
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
 MONGODB_DB = os.getenv("MONGODB_DB", "reading_tracker")
-
-pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 app = FastAPI()
 
@@ -59,7 +57,7 @@ async def signup(data: SignupData):
             status_code=400, detail="A user with that email already exists."
         )
 
-    hashed_password = pwd_context.hash(data.password)
+    hashed_password = hash_password(data.password)
     await users_collection.insert_one(
         {
             "name": data.name,
@@ -74,7 +72,7 @@ async def signup(data: SignupData):
 @app.post("/api/signin")
 async def signin(data: SigninData):
     user = await users_collection.find_one({"email": data.email.lower()})
-    if not user or not pwd_context.verify(data.password, user["password"]):
+    if not user or not verify_password(data.password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
     return {"message": "Signed in successfully."}
