@@ -1,45 +1,63 @@
-# CS3980 Final Project (Reading Tracker)
+# Book Nook Reading Tracker
 
-We developed a comprehensive and user-friendly book tracking application that allows users to organize book lists, track their reading progress, write reviews, obtain statistics on reading habits, and set reading goals.
+Book Nook is a FastAPI + Angular reading tracker for organizing current books, up-next books, account sign in, and placeholder shelves for finished and favorite books.
 
-___
+## Project Layout
 
-<strong> Steps for running app: </strong>
+```text
+project-root/
+  angular/      Angular frontend
+  book_nook/    FastAPI backend
+```
 
-**1.** Create virtual environment (run this the first time you pull the code because the virtual environment isn't pushed to GitHub):
+## Run The App
 
-```bash
+Build the Angular frontend:
+
+```powershell
+cd angular
+npm install
+npm run build
+```
+
+Run the FastAPI backend:
+
+```powershell
+cd ..\book_nook
 python -m venv venv
-```
-**2.** Activate the virtual environment:
-```bash
-.\venv\Scripts\activate
-```
-or
-```bash
 .\venv\Scripts\Activate.ps1
-```
-**3.** Download the required packages:
-```bash
 pip install -r requirements.txt
+python main.py
 ```
 
-**4.** Run app after activating virtual environment by running in the terminal:
-```bash
-uvicorn main:app --reload
+Open:
+
+```text
+http://127.0.0.1:8000
 ```
 
-**MongoDB**
+For Angular-only development, run this from `angular/`:
 
-**1.** Copy `.env.example` to `.env`.
+```powershell
+npm start
+```
 
-**2.** Update `MONGODB_URI` and `MONGODB_DB` in `.env`.
+Then keep the backend running at `http://localhost:8000`.
 
-___
+## MongoDB
+
+The backend reads environment variables from `book_nook/.env`.
+
+Required values:
+
+```env
+MONGODB_URI=...
+MONGODB_DB=...
+SECRET_KEY=...
+```
 
 ## Sources
 
 Dashboard styling source: https://www.youtube.com/watch?v=NnniXasJIpY and ClaudeAI
 
 Photo on main page: Photo by <a href="https://unsplash.com/@borodinanadi?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">nadi borodina</a> on <a href="https://unsplash.com/photos/white-and-pink-flowers-on-white-printer-paper-xkx93Q2Pe8E?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-      

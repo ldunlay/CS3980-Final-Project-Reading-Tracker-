@@ -1,8 +1,4 @@
-import beanie
-from typing import Annotated
-from beanie import init_beanie
-from fastapi import APIRouter, HTTPException, Path, status
-from fastapi.responses import FileResponse
+from fastapi import APIRouter
 
 from models import UpNext, UpNextRequest
 
