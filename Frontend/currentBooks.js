@@ -25,6 +25,7 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
     const isbnInput = document.getElementById('isbn');
     const publish_dateInput = document.getElementById('publish_date');
     const current_pageInput = document.getElementById('current_page');
+    const token = localStorage.getItem("token");
 
     // Validating that user enters title, author, and startdate. The rest can be empty
     if (!titleInput.value || !authorInput.value || !startDateInput.value) {
@@ -46,6 +47,8 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
             const closeBtn = document.getElementById('close-add-modal');
             closeBtn.click();
 
+
+
             // clean up
             msgDiv.innerHTML = '';
             titleInput.value = '';
@@ -58,11 +61,15 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
             current_pageInput.value = "";
 
 
+
         }
     };
 
     xhr.open('POST', api, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Authorization, https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#hash-and-verify-the-passwords
+
 
     // parseInt source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
     xhr.send(JSON.stringify({ title: titleInput.value, genre: genreInput.value, author: authorInput.value, startDate: startDateInput.value, publish_date: publish_dateInput.value, isbn: isbnInput.value, num_pages: parseInt(num_pagesInput.value), current_page: parseInt(current_pageInput.value) }));
@@ -82,6 +89,7 @@ document.getElementById('edit-btn').addEventListener('click', (e) => {
     const isbnInput = document.getElementById('isbnEdit');
     const publish_dateInput = document.getElementById('publish_dateEdit');
     const current_pageInput = document.getElementById('current_pageEdit');
+    const token = localStorage.getItem("token");
 
     // Validating that user enters title, author, and startdate. The rest can be empty
     if (!titleInput.value || !authorInput.value || !startDateInput.value) {
@@ -119,7 +127,7 @@ document.getElementById('edit-btn').addEventListener('click', (e) => {
 
     xhr.open('PUT', api + '/' + bookIdInEdit, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Authorization, https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#hash-and-verify-the-passwords
     xhr.send(JSON.stringify({ title: titleInput.value, genre: genreInput.value, author: authorInput.value, startDate: startDateInput.value, publish_date: publish_dateInput.value, isbn: isbnInput.value, num_pages: parseInt(num_pagesInput.value), current_page: parseInt(current_pageInput.value) }));
 });
 
@@ -132,9 +140,11 @@ function deleteBook(id) {
             renderCurrentBooks(data);
         }
     };
+    const token = localStorage.getItem("token");
 
     xhr.open('DELETE', api + '/' + id, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Authorization, https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#hash-and-verify-the-passwords
 
     xhr.send();
 }
@@ -196,7 +206,10 @@ function getAllBooks() {
         }
     };
 
+    const token = localStorage.getItem("token");
+
     xhr.open('GET', api, true);
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Authorization, https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/#hash-and-verify-the-passwords
     xhr.send();
 }
 

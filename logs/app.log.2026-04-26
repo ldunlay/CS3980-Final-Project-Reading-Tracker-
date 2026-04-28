@@ -1,0 +1,35 @@
+2026-04-26 15:56:39,425 INFO main:100 Application starts up...
+2026-04-26 15:56:45,286 INFO current_books_routes:19 viewing 1 current_books_list
+2026-04-26 15:57:01,563 INFO current_books_routes:65 'a' with id [69e82e541c4ce0051aa9ee4e] was updated.
+2026-04-26 15:57:13,357 INFO main:90 Application shutting down...
+2026-04-26 17:10:20,954 INFO main:100 Application starts up...
+2026-04-26 17:10:25,304 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:10:29,426 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:17:31,335 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:19:30,216 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:19:49,203 INFO main:90 Application shutting down...
+2026-04-26 17:19:52,182 INFO main:100 Application starts up...
+2026-04-26 17:20:05,196 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:23:17,165 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:23:24,613 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:25:03,892 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:28:11,438 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:29:45,092 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:35:11,719 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:35:18,771 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:35:59,944 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:36:19,048 INFO main:90 Application shutting down...
+2026-04-26 17:37:54,903 INFO main:100 Application starts up...
+2026-04-26 17:38:08,731 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:38:33,180 INFO main:90 Application shutting down...
+2026-04-26 17:38:50,807 INFO main:100 Application starts up...
+2026-04-26 17:38:55,493 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:38:58,606 INFO current_books_routes:82 	 Book #[69e82e541c4ce0051aa9ee4e] is deleted.
+2026-04-26 17:39:13,450 INFO current_books_routes:38 New book 'a' created with id [69ee9411955f83225d35d31f]
+2026-04-26 17:40:42,616 INFO current_books_routes:82 	 Book #[69ee9411955f83225d35d31f] is deleted.
+2026-04-26 17:40:46,510 INFO current_books_routes:21 viewing 0 current_books_list
+2026-04-26 17:40:59,944 INFO current_books_routes:38 New book 'a' created with id [69ee947b955f83225d35d320]
+2026-04-26 17:41:27,148 INFO current_books_routes:21 viewing 1 current_books_list
+2026-04-26 17:41:28,143 INFO current_books_routes:82 	 Book #[69ee947b955f83225d35d320] is deleted.
+2026-04-26 17:41:40,910 INFO current_books_routes:38 New book 'a' created with id [69ee94a4955f83225d35d321]
+2026-04-26 17:41:49,680 INFO main:90 Application shutting down...

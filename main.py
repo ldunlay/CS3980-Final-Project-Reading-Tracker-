@@ -2,17 +2,17 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorClient
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 from beanie import init_beanie
-from models import CurrentBook, UpNext
+from models import CurrentBook, TokenResponse, UpNext, User
 import logging
 from logging_setup import setup_logging
-
+from auth.jwt_handler import create_access_token
 from current_books_routes import current_books_router
 from upnext_routes import upnext_router
 
@@ -28,7 +28,7 @@ app = FastAPI()
 
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client[MONGODB_DB]
-users_collection = db["users"]
+
 
 # for logging
 setup_logging()
@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 class SignupData(BaseModel):
-    name: str
+
     email: EmailStr
     password: str
 
@@ -53,31 +53,34 @@ def root():
 
 @app.post("/api/signup")
 async def signup(data: SignupData):
-    existing_user = await users_collection.find_one({"email": data.email.lower()})
+    existing_user = await User.find_one(User.email == data.email.lower())
     if existing_user:
         raise HTTPException(
             status_code=400, detail="A user with that email already exists."
         )
 
     hashed_password = pwd_context.hash(data.password)
-    await users_collection.insert_one(
-        {
-            "name": data.name,
-            "username": data.email.lower(),
-            "email": data.email.lower(),
-            "password": hashed_password,
-        }
-    )
+
+    user = User(email=data.email.lower(), password=hashed_password)
+    await user.insert()
     return {"message": "Account created successfully."}
 
 
-@app.post("/api/signin")
-async def signin(data: SigninData):
-    user = await users_collection.find_one({"email": data.email.lower()})
-    if not user or not pwd_context.verify(data.password, user["password"]):
+@app.post("/api/signin", response_model=TokenResponse)
+async def signin(data: SigninData) -> TokenResponse:
+    user = await User.find_one(User.email == data.email.lower())
+    if not user or not pwd_context.verify(data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
+    (access_token, expiry) = create_access_token(
+        {"username": user.email, "role": user.role}
+    )
 
-    return {"message": "Signed in successfully."}
+    return TokenResponse(
+        username=user.email,
+        role=user.role,
+        access_token=access_token,
+        expiry=expiry,
+    )
 
 
 @app.get("/api/health")
@@ -92,7 +95,7 @@ def shutdown_event():
 
 
 async def init():  # init for beanie allows document object mapping
-    await init_beanie(database=db, document_models=[CurrentBook, UpNext])
+    await init_beanie(database=db, document_models=[CurrentBook, UpNext, User])
 
 
 @app.on_event("startup")

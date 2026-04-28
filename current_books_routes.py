@@ -1,6 +1,8 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, HTTPException, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, status
 
+from auth.authenticate import authenticate
+from auth.jwt_handler import TokenData
 from models import CurrentBook, CurrentBookRequest
 from fastapi.responses import FileResponse
 from pathlib import Path
@@ -16,14 +18,18 @@ current_books_router = APIRouter()
 
 
 @current_books_router.get("")
-async def get_current_books():
-    current_books_list = await CurrentBook.find_all().to_list()
+async def get_current_books(user: TokenData = Depends(authenticate)):
+    current_books_list = await CurrentBook.find(
+        CurrentBook.user == user.username
+    ).to_list()
     logger.info(f"viewing {len(current_books_list)} current_books_list")
     return current_books_list
 
 
 @current_books_router.post("", status_code=201)
-async def create_new_current_book(currentBook: CurrentBookRequest) -> CurrentBook:
+async def create_new_current_book(
+    currentBook: CurrentBookRequest, user: TokenData = Depends(authenticate)
+) -> CurrentBook:
     new_current_book = CurrentBook(
         title=currentBook.title,
         author=currentBook.author,
@@ -33,6 +39,7 @@ async def create_new_current_book(currentBook: CurrentBookRequest) -> CurrentBoo
         publish_date=currentBook.publish_date,
         startDate=currentBook.startDate,
         current_page=currentBook.current_page,
+        user=user.username,
     )
     inserted_book = await new_current_book.insert()
     logger.info(
@@ -43,7 +50,9 @@ async def create_new_current_book(currentBook: CurrentBookRequest) -> CurrentBoo
 
 @current_books_router.put("/{book_id}", status_code=200)
 async def edit_current_book(
-    book_id: PydanticObjectId, editCurrentBook: CurrentBookRequest
+    book_id: PydanticObjectId,
+    editCurrentBook: CurrentBookRequest,
+    user: TokenData = Depends(authenticate),
 ) -> CurrentBook:
 
     book = await CurrentBook.get(book_id)  # finding the current book by its id
@@ -53,6 +62,11 @@ async def edit_current_book(
         raise HTTPException(
             status_code=404, detail="Book not found"
         )  # if it is not found, raise error
+
+    if book.user != user.username:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Operation not allowed"
+        )
 
     book.title = editCurrentBook.title
     book.author = editCurrentBook.author
@@ -69,7 +83,9 @@ async def edit_current_book(
 
 
 @current_books_router.delete("/{book_id}", status_code=200)
-async def delete_current_book(book_id: PydanticObjectId):
+async def delete_current_book(
+    book_id: PydanticObjectId, user: TokenData = Depends(authenticate)
+):
     book = await CurrentBook.get(book_id)  # finding the current book by its id
 
     if not book:
@@ -77,6 +93,11 @@ async def delete_current_book(book_id: PydanticObjectId):
         raise HTTPException(
             status_code=404, detail="Book not found"
         )  # if it is not found, raise error
+
+    if book.user != user.username:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Operation not allowed"
+        )
 
     await book.delete()  # delete from mongo db
     logger.info(f"\t Book #[{book_id}] is deleted.")
@@ -90,10 +111,8 @@ async def delete_current_book(book_id: PydanticObjectId):
 
 
 @current_books_router.get("/download")
-async def download_current_books():
-    books = (
-        await CurrentBook.find_all().to_list()
-    )  # get all of our current books in a list
+async def download_current_books(user: TokenData = Depends(authenticate)):
+    books = await CurrentBook.find(CurrentBook.user == user.username).to_list()
     file_path = (
         DOWNLOADS_DIR / "current_books.json"
     )  # save to the downloads folder on the server
