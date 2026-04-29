@@ -93,7 +93,9 @@ async def download_current_books():
     books = (
         await CurrentBook.find_all().to_list()
     )  # get all of our current books in a list
-    file_path = "routes/downloads/current_books.json"  # save to the downloads folder on the server
+    file_path = (
+        "downloads/current_books.json"  # save to the downloads folder on the server
+    )
 
     with open(file_path, "w") as f:  # open the file path and write the books to it
         json.dump([book.dict() for book in books], f, default=str)
