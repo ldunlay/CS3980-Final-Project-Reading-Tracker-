@@ -1,16 +1,15 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, HTTPException, File, UploadFile
+from fastapi import APIRouter, HTTPException
 
 from models.models import CurrentBook, CurrentBookRequest
 from fastapi.responses import FileResponse
-from pathlib import Path
+
 import json
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-DOWNLOADS_DIR = Path("downloads")
 
 current_books_router = APIRouter()
 
@@ -94,9 +93,7 @@ async def download_current_books():
     books = (
         await CurrentBook.find_all().to_list()
     )  # get all of our current books in a list
-    file_path = (
-        DOWNLOADS_DIR / "current_books.json"
-    )  # save to the downloads folder on the server
+    file_path = "routes/downloads/current_books.json"  # save to the downloads folder on the server
 
     with open(file_path, "w") as f:  # open the file path and write the books to it
         json.dump([book.dict() for book in books], f, default=str)
