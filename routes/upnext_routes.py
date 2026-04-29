@@ -4,7 +4,7 @@ from beanie import init_beanie
 from fastapi import APIRouter, HTTPException, Path, status
 from fastapi.responses import FileResponse
 
-from models import UpNext, UpNextRequest
+from models.models import UpNext, UpNextRequest
 
 
 upnext_router = APIRouter()

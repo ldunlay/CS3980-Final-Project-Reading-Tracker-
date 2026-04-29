@@ -9,12 +9,12 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 from beanie import init_beanie
-from models import CurrentBook, UpNext
+from models.models import CurrentBook, UpNext
 import logging
 from logging_setup import setup_logging
 
-from current_books_routes import current_books_router
-from upnext_routes import upnext_router
+from routes.current_books_routes import current_books_router
+from routes.upnext_routes import upnext_router
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")

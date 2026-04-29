@@ -1,7 +1,7 @@
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException, File, UploadFile
 
-from models import CurrentBook, CurrentBookRequest
+from models.models import CurrentBook, CurrentBookRequest
 from fastapi.responses import FileResponse
 from pathlib import Path
 import json
