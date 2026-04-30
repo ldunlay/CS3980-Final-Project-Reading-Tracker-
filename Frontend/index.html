@@ -1,24 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-
     <title>Book Nook</title>
 </head>
-
 <body>
 
-    <header class="header">
-        <h1>Book Nook</h1>
-    </header>
-
     <section class="sidebar">
-
-        <a href="index.html">Home</a>
+        <div class="sidebar-brand">📚 Book Nook</div>
+        <a href="index.html" class="active">Home</a>
         <a href="currentBooks.html">Current Books</a>
         <a href="upNext.html">Up Next</a>
         <a href="finishedBooks.html">Finished Books</a>
@@ -26,16 +19,14 @@
     </section>
 
     <main class="main">
-        <p>Welcome to Book Nook!</p>
-        <br>
-        <br>
-        <img src="homePageImage.jpg" alt="" style="width: 30%; height: auto;"">
+        <div class="page-header">
+            <h1 class="page-title">Welcome to <span>Book Nook</span></h1>
+        </div>
+        <div class="welcome-section">
+            <p class="welcome-text">Track the books you're reading, have read, and want to read.</p>
+            <img src="homePageImage.jpg" alt="Book Nook" class="welcome-img" />
+        </div>
     </main>
 
-
-
-
-
 </body>
-
 </html>

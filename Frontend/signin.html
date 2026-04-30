@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <title>Sign In | Book Nook</title>
 </head>
 
@@ -51,7 +52,8 @@
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
 
-            const response = await fetch('/api/signin', {
+            // FIX 4: Updated URL to match your FastAPI router prefix (/api/users)
+            const response = await fetch('/api/users/signin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),

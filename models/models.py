@@ -51,3 +51,32 @@ class UpNextRequest(BaseModel):  # inherits from BaseModel for input validation
     isbn: str | None = None
     publish_date: date | None = None
     added_date: date | None = None
+
+class FinishedBook(Document):  # inherits from Document for mapping to MongoDB
+ 
+    title: str
+    author: str
+    num_pages: int | None = None
+    genre: str | None = None
+    isbn: str | None = None
+    publish_date: date | None = None
+    startDate: date | None = None
+    finishDate: date | None = None
+    rating: int | None = None        # 1–5 stars
+    review: str | None = None
+ 
+    class Settings:
+        name = "FinishedBook"  # making sure it maps to the correct mongo db collection
+ 
+ 
+class FinishedBookRequest(BaseModel):  # inherits from BaseModel for input validation
+    title: str
+    author: str
+    num_pages: int | None = None
+    genre: str | None = None
+    isbn: str | None = None
+    publish_date: date | None = None
+    startDate: date | None = None
+    finishDate: date | None = None
+    rating: int | None = None
+    review: str | None = None

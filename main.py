@@ -1,112 +1,62 @@
-import os
-from pathlib import Path
-
-from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, EmailStr
-from beanie import init_beanie
-from models.models import CurrentBook, UpNext
-from auth.hash_password import hash_password, verify_password
+from contextlib import asynccontextmanager
 import logging
-from logging_setup import setup_logging
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
+from database.connection import initialize_database
+from logging_setup import setup_logging
 from routes.current_books_routes import current_books_router
 from routes.upnext_routes import upnext_router
+from routes.finished_books_routes import finished_books_router
+from routes.users import router as users_router
+import os
 
-BASE_DIR = Path(__file__).resolve().parent
-load_dotenv(BASE_DIR / ".env")
 
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
-MONGODB_DB = os.getenv("MONGODB_DB", "reading_tracker")
-
-app = FastAPI()
-
-client = AsyncIOMotorClient(MONGODB_URI)
-db = client[MONGODB_DB]
-users_collection = db["users"]
 
 # for logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Application starts up...")
+    await initialize_database()
+    yield
+    ...
 
-class SignupData(BaseModel):
-    name: str
-    email: EmailStr
-    password: str
 
+app = FastAPI(title="Book Nook", version="1.0.0", lifespan=lifespan)
 
-class SigninData(BaseModel):
-    email: EmailStr
-    password: str
+# register CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# register routes
+
+app.include_router(current_books_router, prefix="/api/current-books", tags=["Current Books"])  # routing for current books api
+app.include_router(upnext_router, prefix="/api/up-next", tags=["Up Next"],)  # routing for up next api
+app.include_router(finished_books_router, prefix="/api/finished-books", tags=["Finished Books"])  # routing for finished books api
+app.include_router(users_router, prefix="/api/users", tags=["Users"])  # routing for users api
 
 @app.get("/")
-def root():
-    return FileResponse(BASE_DIR / "Frontend" / "signin.html")
-
-
-@app.post("/api/signup")
-async def signup(data: SignupData):
-    existing_user = await users_collection.find_one({"email": data.email.lower()})
-    if existing_user:
-        raise HTTPException(
-            status_code=400, detail="A user with that email already exists."
-        )
-
-    hashed_password = hash_password(data.password)
-    await users_collection.insert_one(
-        {
-            "name": data.name,
-            "username": data.email.lower(),
-            "email": data.email.lower(),
-            "password": hashed_password,
-        }
-    )
-    return {"message": "Account created successfully."}
-
-
-@app.post("/api/signin")
-async def signin(data: SigninData):
-    user = await users_collection.find_one({"email": data.email.lower()})
-    if not user or not verify_password(data.password, user["password"]):
-        raise HTTPException(status_code=401, detail="Invalid email or password.")
-
-    return {"message": "Signed in successfully."}
-
+async def root():
+    return FileResponse("./Frontend/signin.html")
 
 @app.get("/api/health")
 def health_check():
     return {"status": "ok"}
 
-
-@app.on_event("shutdown")
-def shutdown_event():
-    logger.info("Application shutting down...")
-    client.close()
-
-
-async def init():  # init for beanie allows document object mapping
-    await init_beanie(database=db, document_models=[CurrentBook, UpNext])
-
-
-@app.on_event("startup")
-async def startup():
-    logger.info("Application starts up...")
-    await init()
-
-
-# register routes
-
-app.include_router(
-    current_books_router, tags=["Current Books"], prefix="/api/current-books"
-)  # routing for current books api
-
-app.include_router(
-    upnext_router, tags=["Up Next"], prefix="/api/up-next"
-)  # routing for up next api
-
 app.mount("/", StaticFiles(directory="Frontend", html=True), name="frontend")
+
+
+
+
+
+

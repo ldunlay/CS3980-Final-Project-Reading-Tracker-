@@ -1,16 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-    <title>Document</title>
+    <title>Book Nook — Finished Books</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
 </head>
-
 <body>
 
-</body>
+    <section class="sidebar">
+        <div class="sidebar-brand">📚 Book Nook</div>
+        <a href="index.html">Home</a>
+        <a href="currentBooks.html">Current Books</a>
+        <a href="upNext.html">Up Next</a>
+        <a href="finishedBooks.html" class="active">Finished Books</a>
+        <a href="favoriteBooks.html">Favorite Books</a>
+    </section>
 
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">Finished <span>Books</span></h1>
+        </div>
+        <div id="finished-books" class="book-grid"></div>
+    </main>
+
+    <!-- ── Edit Review Modal ── -->
+    <div id="modal-edit-finished" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Review</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="star-row" id="star-rating-edit">
+                            <span class="star" data-value="1">&#9733;</span>
+                            <span class="star" data-value="2">&#9733;</span>
+                            <span class="star" data-value="3">&#9733;</span>
+                            <span class="star" data-value="4">&#9733;</span>
+                            <span class="star" data-value="5">&#9733;</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-review-text" class="form-label">Review</label>
+                        <textarea class="form-control" id="edit-review-text" rows="4"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-finish-date" class="form-label">Date Finished</label>
+                        <input type="date" class="form-control" id="edit-finish-date" />
+                    </div>
+                    <div class="text-danger small" id="msgEditFinished"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="close-edit-finished-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="edit-finished-btn" type="button" class="btn btn-warning">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="finishedBooks.js"></script>
+
+</body>
 </html>

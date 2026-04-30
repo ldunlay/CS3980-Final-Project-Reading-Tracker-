@@ -1,0 +1,35 @@
+from fastapi import APIRouter, HTTPException
+from models.users import User, SignupData, SigninData
+from auth.hash_password import hash_password, verify_password
+
+router = APIRouter()
+
+@router.post("/signup")
+async def signup(data: SignupData):
+    # Search using Beanie syntax instead of raw mongo
+    existing_user = await User.find_one(User.email == data.email.lower())
+    if existing_user:
+        raise HTTPException(
+            status_code=400, detail="A user with that email already exists."
+        )
+
+    hashed = hash_password(data.password)
+    
+    # Create the user document
+    new_user = User(
+        name=data.name,
+        email=data.email.lower(),
+        username=data.email.lower(),
+        password=hashed
+    )
+    await new_user.create()
+    return {"message": "Account created successfully."}
+
+@router.post("/signin")
+async def signin(data: SigninData):
+    user = await User.find_one(User.email == data.email.lower())
+    
+    if not user or not verify_password(data.password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    return {"message": "Signed in successfully."}

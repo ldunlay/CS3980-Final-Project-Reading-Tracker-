@@ -1,120 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-
-    <title>Book Nook</title>
+    <title>Book Nook — Up Next</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
 </head>
-
-<body class="py-4">
-
-    <header class="header">
-        <h1>Up Next</h1>
-    </header>
+<body>
 
     <section class="sidebar">
+        <div class="sidebar-brand">📚 Book Nook</div>
         <a href="index.html">Home</a>
         <a href="currentBooks.html">Current Books</a>
-        <a href="upNext.html">Up Next</a>
+        <a href="upNext.html" class="active">Up Next</a>
         <a href="finishedBooks.html">Finished Books</a>
         <a href="favoriteBooks.html">Favorite Books</a>
     </section>
 
-
-    <div class="app mx-auto">
-        <br>
-        <br>
-        <div class="d-flex justify-content-end mb-3">
-            <button id="openNewModal" data-bs-toggle="modal" data-bs-target="#modal-add">
-
-                Add New Book
-            </button>
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">Up <span>Next</span></h1>
+            <div class="header-actions">
+                <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modal-add">
+                    + Add New Book
+                </button>
+            </div>
         </div>
-        <div id="books" class="overflow-y-auto"></div>
-    </div>
 
-    <!-- modal dialog for adding -->
+        <div id="books" class="book-grid"></div>
+    </main>
+
+    <!-- ── Add Modal ── -->
     <div id="modal-add" class="modal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add a new Book to Your Reading List</h5>
+                    <h5 class="modal-title">Add to Your Reading List</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
                 </div>
-                <div class="modal-body">
-                    <div id="new-book-form">
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="title" class="form-label">Title *</label>
                             <input type="text" class="form-control" id="title" />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-12">
+                            <label for="author" class="form-label">Author *</label>
+                            <input type="text" class="form-control" id="author" />
+                        </div>
+                        <div class="col-md-6">
                             <label for="genre" class="form-label">Genre</label>
                             <input type="text" class="form-control" id="genre" />
                         </div>
-
-                        <div class="mb-3">
-                            <label for="author" class="form-label">Author</label>
-                            <input type="text" class="form-control" id="author" />
-                        </div>
-
-
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="num_pages" class="form-label">Number of Pages</label>
                             <input type="number" class="form-control" id="num_pages" />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="isbn" class="form-label">ISBN</label>
                             <input type="text" class="form-control" id="isbn" />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="publish_date" class="form-label">Publish Date</label>
                             <input type="date" class="form-control" id="publish_date" />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="added_date" class="form-label">Date Added</label>
                             <input type="date" class="form-control" id="added_date" />
                         </div>
-
-
-
-
-                        <div class="text-danger" id="msg"></div>
                     </div>
+                    <div class="text-danger mt-2 small" id="msg"></div>
                 </div>
                 <div class="modal-footer">
-                    <button id="close-add-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button id="add-btn" type="button" class="btn btn-primary">
-                        Add
-                    </button>
+                    <button id="close-add-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="add-btn" type="button" class="btn" style="background:var(--accent);color:#fff;">Add Book</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-
-
     <script src="upNext.js"></script>
 
 </body>
-
 </html>

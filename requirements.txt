@@ -8,3 +8,4 @@ beanie==1.26.0
 resend
 python-dotenv
 pyjwt
+pydantic-settings

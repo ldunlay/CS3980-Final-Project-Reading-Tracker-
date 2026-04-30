@@ -1,126 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-
-    <title>Book Nook</title>
+    
+    <title>Book Nook — Current Books</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
 </head>
+<body>
 
-<body class="py-4">
-
-    <header class="header">
-        <h1>Current Books</h1>
-    </header>
+    // genre drop down list
+    <datalist id="genre-options">
+        <option value="Fantasy">
+        <option value="Science Fiction">
+        <option value="Mystery">
+        <option value="Thriller">
+        <option value="Romance">
+        <option value="Historical Fiction">
+        <option value="Literary Fiction">
+        <option value="Horror">
+        <option value="Nonfiction">
+        <option value="Biography">
+        <option value="Memoir">
+        <option value="Self-Help">
+        <option value="True Crime">
+        <option value="Graphic Novel">
+        <option value="Young Adult">
+        <option value="Children's">
+        <option value="Poetry">
+        <option value="Classic">
+        <option value="Adventure">
+        <option value="Humor">
+        <option value="Short Stories">
+    </datalist>
 
     <section class="sidebar">
+        <div class="sidebar-brand"> Book Nook</div>
         <a href="index.html">Home</a>
-        <a href="currentBooks.html">Current Books</a>
+        <a href="currentBooks.html" class="active">Current Books</a>
         <a href="upNext.html">Up Next</a>
         <a href="finishedBooks.html">Finished Books</a>
         <a href="favoriteBooks.html">Favorite Books</a>
     </section>
 
-
-    <div class="app mx-auto">
-        <br>
-        <br>
-        <div class="d-flex justify-content-end mb-3">
-            <button id="openNewModal" data-bs-toggle="modal" data-bs-target="#modal-add">
-                Add New Book
-            </button>
-            <button type="button" id="download-btn">Download Current Books List</button>
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">Current <span>Books</span></h1>
+            <div class="header-actions">
+                <button class="btn-outline-custom" id="download-btn">⬇ Download List</button>
+                <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modal-add">
+                    + Add New Book
+                </button>
+            </div>
         </div>
+        <div id="books" class="book-grid"></div>
+    </main>
 
-        <div id="books" class="overflow-y-auto"></div>
-    </div>
-
-    <!-- modal dialog for adding -->
+    <!-- ── Add Modal ── -->
     <div id="modal-add" class="modal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add a new Book</h5>
+                    <h5 class="modal-title">Add a New Book</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-
-
-
                 </div>
-                <div class="modal-body">
-                    <div id="new-book-form">
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="title" class="form-label">Title *</label>
                             <input type="text" class="form-control" id="title" />
                         </div>
-
-                        <div class="mb-3">
-                            <label for="genre" class="form-label">Genre</label>
-                            <input type="text" class="form-control" id="genre" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="author" class="form-label">Author</label>
+                        <div class="col-12">
+                            <label for="author" class="form-label">Author *</label>
                             <input type="text" class="form-control" id="author" />
                         </div>
-
-
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
+                            <label for="genre" class="form-label">Genre</label>
+                            <input type="text" class="form-control" id="genre" list="genre-options" autocomplete="off" placeholder="Search or type a genre..." />
+                        </div>
+                        <div class="col-md-6">
                             <label for="num_pages" class="form-label">Number of Pages</label>
                             <input type="number" class="form-control" id="num_pages" />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="isbn" class="form-label">ISBN</label>
                             <input type="text" class="form-control" id="isbn" />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="current_page" class="form-label">Current Page</label>
                             <input type="number" class="form-control" id="current_page" />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="publish_date" class="form-label">Publish Date</label>
                             <input type="date" class="form-control" id="publish_date" />
                         </div>
-
-
-                        <div class="mb-3">
-                            <label for="startDate" class="form-label">Start Date</label>
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">Start Date *</label>
                             <input type="date" class="form-control" id="startDate" />
                         </div>
-
-
-
-
-
-
-                        <div class="text-danger" id="msg"></div>
                     </div>
+                    <div class="text-danger mt-2 small" id="msg"></div>
                 </div>
                 <div class="modal-footer">
-                    <button id="close-add-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button id="add-btn" type="button" class="btn btn-primary">
-                        Add
-                    </button>
+                    <button id="close-add-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="add-btn" type="button" class="btn" style="background:var(--accent);color:#fff;">Add Book</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-
-
-    <!-- modal dialog for editing -->
+    <!-- ── Edit Modal ── -->
     <div id="modal-edit" class="modal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -128,68 +120,97 @@
                     <h5 class="modal-title">Edit Book</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <div class="modal-body">
-                    <div id="edit-book-form">
-                        <div class="mb-3">
-                            <label for="titleEdit" class="form-label">Title</label>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="titleEdit" class="form-label">Title *</label>
                             <input type="text" class="form-control" id="titleEdit" />
                         </div>
-                        <div class="mb-3">
-                            <label for="genreEdit" class="form-label">Genre</label>
-                            <input type="text" class="form-control" id="genreEdit" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="authorEdit" class="form-label">Author</label>
+                        <div class="col-12">
+                            <label for="authorEdit" class="form-label">Author *</label>
                             <input type="text" class="form-control" id="authorEdit" />
                         </div>
-                        <div class="mb-3">
-                            <label for="startDateEdit" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="startDateEdit" />
+                        <div class="col-md-6">
+                            <label for="genreEdit" class="form-label">Genre</label>
+                            <input type="text" class="form-control" id="genreEdit" list="genre-options" autocomplete="off" placeholder="Search or type a genre..." />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="num_pagesEdit" class="form-label">Number of Pages</label>
                             <input type="number" class="form-control" id="num_pagesEdit" />
                         </div>
-
-                        <div class="mb-3">
+                        <div class="col-md-6">
                             <label for="isbnEdit" class="form-label">ISBN</label>
                             <input type="text" class="form-control" id="isbnEdit" />
                         </div>
-
-                        <div class="mb-3">
-                            <label for="publish_date" class="form-label">Publish Date</label>
-                            <input type="date" class="form-control" id="publish_dateEdit" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="current_page" class="form-label">Current Page</label>
+                        <div class="col-md-6">
+                            <label for="current_pageEdit" class="form-label">Current Page</label>
                             <input type="number" class="form-control" id="current_pageEdit" />
                         </div>
-                        <div class="text-danger" id="msgEdit"></div>
+                        <div class="col-md-6">
+                            <label for="publish_dateEdit" class="form-label">Publish Date</label>
+                            <input type="date" class="form-control" id="publish_dateEdit" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="startDateEdit" class="form-label">Start Date *</label>
+                            <input type="date" class="form-control" id="startDateEdit" />
+                        </div>
                     </div>
+                    <div class="text-danger mt-2 small" id="msgEdit"></div>
                 </div>
                 <div class="modal-footer">
-                    <button id="close-edit-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button id="edit-btn" type="button" class="btn btn-warning">
-                        Yes, Update it.
+                    <button id="close-edit-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="edit-btn" type="button" class="btn btn-warning">Update Book</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Finish Modal ── -->
+    <div id="modal-finish" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🎉 Mark as Finished</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="congrats-text">
+                        Congrats on finishing <strong id="finish-book-title"></strong>!
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Your Rating</label>
+                        <div class="star-row" id="star-rating">
+                            <span class="star" data-value="1">&#9733;</span>
+                            <span class="star" data-value="2">&#9733;</span>
+                            <span class="star" data-value="3">&#9733;</span>
+                            <span class="star" data-value="4">&#9733;</span>
+                            <span class="star" data-value="5">&#9733;</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="finish-review" class="form-label">Review (optional)</label>
+                        <textarea class="form-control" id="finish-review" rows="4" placeholder="What did you think?"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="finish-date" class="form-label">Date Finished</label>
+                        <input type="date" class="form-control" id="finish-date" />
+                    </div>
+                    <div class="text-danger small" id="msgFinish"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="close-finish-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="finish-btn" type="button" class="btn" style="background:var(--success);color:#fff;">
+                        Mark as Finished
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-
-
     <script src="currentBooks.js"></script>
 
 </body>
-
 </html>

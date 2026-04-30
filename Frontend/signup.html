@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <title>Sign Up | Book Nook</title>
 </head>
 
@@ -14,7 +15,7 @@
     </header>
 
     <section class="sidebar">
-        <a href="index.html">Home</a>
+        <a href="/">Home</a>
         <a href="currentBooks.html">Current Books</a>
         <a href="upNext.html">Up Next</a>
         <a href="finishedBooks.html">Finished Books</a>
@@ -57,7 +58,8 @@
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
 
-            const response = await fetch('/api/signup', {
+            // FIX 4: URL updated to /api/users/signup to match your router prefix
+            const response = await fetch('/api/users/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password }),
@@ -68,11 +70,13 @@
                 messageBox.classList.add('success');
                 messageBox.textContent = result.message || 'Account created successfully! Redirecting to sign in...';
                 setTimeout(() => {
+                    // Redirect to the correctly mapped signin page
                     window.location.href = 'signin.html';
                 }, 1800);
             } else {
                 messageBox.classList.remove('success');
-                messageBox.textContent = result.detail || result.message || 'Sign up failed.';
+                // Displays specific error (e.g., "User already exists") from FastAPI
+                messageBox.textContent = result.detail || 'Sign up failed.';
             }
         });
     </script>
