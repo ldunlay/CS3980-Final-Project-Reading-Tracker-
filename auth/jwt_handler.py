@@ -1,18 +1,13 @@
 from datetime import datetime, timedelta, timezone
+
 from pydantic import BaseModel
+
+from database.connection import get_settings
 from fastapi import HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 import jwt
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = get_settings().SECRET_KEY
 ALGORITHM = "HS256"
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/signin")
-
-# below is the code from the Professor
 
 
 class TokenData(BaseModel):
