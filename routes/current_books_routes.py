@@ -1,6 +1,8 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from auth import authenticate
+from auth.jwt_handler import TokenData
 from models.models import CurrentBook, CurrentBookRequest
 from fastapi.responses import FileResponse
 
@@ -10,19 +12,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from auth.authenticate import authenticate
 
 current_books_router = APIRouter()
 
 
 @current_books_router.get("")
-async def get_current_books():
+async def get_current_books(user: TokenData = Depends(authenticate)):
     current_books_list = await CurrentBook.find_all().to_list()
     logger.info(f"viewing {len(current_books_list)} current_books_list")
     return current_books_list
 
 
 @current_books_router.post("", status_code=201)
-async def create_new_current_book(currentBook: CurrentBookRequest) -> CurrentBook:
+async def create_new_current_book(
+    currentBook: CurrentBookRequest, user: TokenData = Depends(authenticate)
+) -> CurrentBook:
     new_current_book = CurrentBook(
         title=currentBook.title,
         author=currentBook.author,
@@ -42,7 +47,9 @@ async def create_new_current_book(currentBook: CurrentBookRequest) -> CurrentBoo
 
 @current_books_router.put("/{book_id}", status_code=200)
 async def edit_current_book(
-    book_id: PydanticObjectId, editCurrentBook: CurrentBookRequest
+    book_id: PydanticObjectId,
+    editCurrentBook: CurrentBookRequest,
+    user: TokenData = Depends(authenticate),
 ) -> CurrentBook:
 
     book = await CurrentBook.get(book_id)  # finding the current book by its id
@@ -68,7 +75,9 @@ async def edit_current_book(
 
 
 @current_books_router.delete("/{book_id}", status_code=200)
-async def delete_current_book(book_id: PydanticObjectId):
+async def delete_current_book(
+    book_id: PydanticObjectId, user: TokenData = Depends(authenticate)
+):
     book = await CurrentBook.get(book_id)  # finding the current book by its id
 
     if not book:
@@ -89,7 +98,7 @@ async def delete_current_book(book_id: PydanticObjectId):
 
 
 @current_books_router.get("/download")
-async def download_current_books():
+async def download_current_books(user: TokenData = Depends(authenticate)):
     books = (
         await CurrentBook.find_all().to_list()
     )  # get all of our current books in a list

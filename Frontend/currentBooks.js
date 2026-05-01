@@ -104,11 +104,13 @@ document.getElementById('finish-btn').addEventListener('click', (e) => {
 
     xhrPost.open('POST', finishedApi, true);
     xhrPost.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhrPost.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('token'));
     xhrPost.send(JSON.stringify(finishedBook));
 });
 
 // ── Download ──────────────────────────────────────────────────────────────────
 document.getElementById('download-btn').addEventListener('click', () => {
+
     window.location.href = api + '/download';
 });
 
@@ -154,6 +156,7 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
 
     xhr.open('POST', api, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('token'));
     xhr.send(JSON.stringify({
         title: titleInput.value,
         genre: genreInput.value,
@@ -210,6 +213,7 @@ document.getElementById('edit-btn').addEventListener('click', (e) => {
 
     xhr.open('PUT', api + '/' + bookIdInEdit, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('token'));
     xhr.send(JSON.stringify({
         title: titleInput.value,
         genre: genreInput.value,
@@ -234,6 +238,7 @@ function deleteBook(id) {
 
     xhr.open('DELETE', api + '/' + id, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('token'));
     xhr.send();
 }
 
@@ -326,6 +331,7 @@ function getAllBooks() {
         }
     };
     xhr.open('GET', api, true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('token'));
     xhr.send();
 }
 

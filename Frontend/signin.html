@@ -27,8 +27,8 @@
             <h2>Sign In</h2>
             <form id="signinForm">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="you@example.com" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -49,18 +49,23 @@
             event.preventDefault();
             messageBox.textContent = '';
 
-            const email = document.getElementById('email').value.trim();
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
+
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
 
             // FIX 4: Updated URL to match your FastAPI router prefix (/api/users)
             const response = await fetch('/api/users/signin', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: formData,
             });
 
             const result = await response.json();
             if (response.ok) {
+                localStorage.setItem('token', result.access_token);  // store the item and user in local storage
+                localStorage.setItem('role', result.role);
                 window.location.href = 'index.html';
             } else {
                 messageBox.textContent = result.detail || result.message || 'Sign in failed.';
