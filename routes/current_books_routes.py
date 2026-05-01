@@ -1,5 +1,6 @@
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException
+from pydantic import ValidationError
 
 from models.models import CurrentBook, CurrentBookRequest
 from fastapi.responses import FileResponse
@@ -38,6 +39,50 @@ async def create_new_current_book(currentBook: CurrentBookRequest) -> CurrentBoo
         f"New book '{inserted_book.title}' created with id [{inserted_book.id}]"
     )
     return inserted_book
+
+
+@current_books_router.post("/upload", status_code=201)
+async def upload_current_books(uploaded_books: list[dict]) -> list[CurrentBook]:
+    imported_books = []
+
+    for book_data in uploaded_books:
+        if not isinstance(book_data, dict):
+            raise HTTPException(
+                status_code=400,
+                detail="Uploaded file must contain a list of book objects.",
+            )
+
+        book_data = book_data.copy()
+        book_data.pop("_id", None)
+        book_data.pop("id", None)
+
+        try:
+            current_book = CurrentBookRequest(**book_data)
+        except ValidationError as exc:
+            raise HTTPException(
+                status_code=400,
+                detail="Uploaded file contains a book with missing or invalid fields.",
+            ) from exc
+
+        imported_books.append(
+            CurrentBook(
+                title=current_book.title,
+                author=current_book.author,
+                num_pages=current_book.num_pages,
+                genre=current_book.genre,
+                isbn=current_book.isbn,
+                publish_date=current_book.publish_date,
+                startDate=current_book.startDate,
+                current_page=current_book.current_page,
+            )
+        )
+
+    inserted_books = []
+    for book in imported_books:
+        inserted_books.append(await book.insert())
+
+    logger.info(f"Imported {len(inserted_books)} current books from uploaded JSON.")
+    return inserted_books
 
 
 @current_books_router.put("/{book_id}", status_code=200)

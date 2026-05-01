@@ -111,6 +111,59 @@ document.getElementById('finish-btn').addEventListener('click', (e) => {
 document.getElementById('download-btn').addEventListener('click', () => {
     window.location.href = api + '/download';
 });
+// -- Upload ───────────────────────────────────────────────────────────────────
+document.getElementById('upload-btn').addEventListener('click', () => {
+    document.getElementById('upload-file').click();
+});
+
+document.getElementById('upload-file').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        let uploadedBooks;
+
+        try {
+            uploadedBooks = JSON.parse(reader.result);
+        } catch {
+            alert('Please upload a valid JSON file.');
+            e.target.value = '';
+            return;
+        }
+
+        if (!Array.isArray(uploadedBooks)) {
+            alert('The uploaded file must contain a list of books.');
+            e.target.value = '';
+            return;
+        }
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+            if (xhr.status === 201) {
+                const importedBooks = JSON.parse(xhr.response) || [];
+                data = data.concat(importedBooks);
+                renderCurrentBooks(data);
+            } else {
+                alert('Unable to upload this book list. Please check the file format.');
+            }
+
+            e.target.value = '';
+        };
+
+        xhr.open('POST', api + '/upload', true);
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.send(JSON.stringify(uploadedBooks));
+    };
+
+    reader.onerror = () => {
+        alert('Unable to read the selected file.');
+        e.target.value = '';
+    };
+
+    reader.readAsText(file);
+});
 
 // ── Add book ──────────────────────────────────────────────────────────────────
 document.getElementById('add-btn').addEventListener('click', (e) => {
