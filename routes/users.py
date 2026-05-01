@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from models.users import User, SignupData, SigninData
+from models.users import User, SignupData, SigninData, TokenResponse
 from auth.hash_password import hash_password, verify_password
+from auth.jwt_handler import create_access_token
 
 router = APIRouter()
 
@@ -26,10 +27,19 @@ async def signup(data: SignupData):
     return {"message": "Account created successfully."}
 
 @router.post("/signin")
-async def signin(data: SigninData):
+async def signin(data: SigninData) -> TokenResponse:
     user = await User.find_one(User.email == data.email.lower())
     
     if not user or not verify_password(data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
-    return {"message": "Signed in successfully."}
+    token, expiry = create_access_token(
+        {"username": user.email, "role": user.role}
+    )
+
+    return TokenResponse(
+        username=user.email,
+        role=user.role,
+        access_token=token,
+        expiry=expiry,
+    )

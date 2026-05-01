@@ -90,6 +90,7 @@ document.getElementById('edit-finished-btn').addEventListener('click', (e) => {
 
     xhr.open('PUT', finishedApi + '/' + bookIdInEdit, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send(JSON.stringify(updatedBook));
 });
 
@@ -104,6 +105,7 @@ function deleteFinishedBook(id) {
     };
     xhr.open('DELETE', finishedApi + '/' + id, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send();
 }
 
@@ -176,9 +178,12 @@ function getAllFinishedBooks() {
         if (xhr.status === 200) {
             finishedData = JSON.parse(xhr.response) || [];
             renderFinishedBooks(finishedData);
+        } else {
+            handleAuthError(xhr.status);
         }
     };
     xhr.open('GET', finishedApi, true);
+    setAuthHeader(xhr);
     xhr.send();
 }
 

@@ -5,6 +5,7 @@ from beanie import Document
 
 class CurrentBook(Document):  # inherits from Document for mapping to MongoDB
 
+    owner_username: str | None = None
     title: str
     author: str
     num_pages: int | None = None
@@ -31,6 +32,7 @@ class CurrentBookRequest(BaseModel):  # inherits from BaseModel for input valida
 
 class UpNext(Document):  # inherits from Document for mapping to MongoDB
 
+    owner_username: str | None = None
     title: str
     author: str
     num_pages: int | None = None
@@ -54,6 +56,7 @@ class UpNextRequest(BaseModel):  # inherits from BaseModel for input validation
 
 class FinishedBook(Document):  # inherits from Document for mapping to MongoDB
  
+    owner_username: str | None = None
     title: str
     author: str
     num_pages: int | None = None

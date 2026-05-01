@@ -1,4 +1,5 @@
 from beanie import Document
+from datetime import datetime
 from pydantic import EmailStr, BaseModel
 
 # This is for the Database (MongoDB)
@@ -7,6 +8,7 @@ class User(Document):
     email: EmailStr
     username: str
     password: str  # This will store the hashed password
+    role: str = "BasicUser"
 
     class Settings:
         name = "users"  # The collection name in Mongo
@@ -20,3 +22,11 @@ class SignupData(BaseModel):
 class SigninData(BaseModel):
     email: EmailStr
     password: str
+
+
+class TokenResponse(BaseModel):
+    username: str
+    role: str
+    access_token: str
+    expiry: datetime
+    token_type: str = "bearer"

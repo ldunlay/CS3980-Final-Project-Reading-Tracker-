@@ -96,6 +96,7 @@ document.getElementById('finish-btn').addEventListener('click', (e) => {
             };
             xhrDelete.open('DELETE', api + '/' + bookIdToFinish, true);
             xhrDelete.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            setAuthHeader(xhrDelete);
             xhrDelete.send();
         } else {
             msgDiv.innerHTML = 'Something went wrong saving to Finished Books. Please try again.';
@@ -104,12 +105,28 @@ document.getElementById('finish-btn').addEventListener('click', (e) => {
 
     xhrPost.open('POST', finishedApi, true);
     xhrPost.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhrPost);
     xhrPost.send(JSON.stringify(finishedBook));
 });
 
 // ── Download ──────────────────────────────────────────────────────────────────
 document.getElementById('download-btn').addEventListener('click', () => {
-    window.location.href = api + '/download';
+    fetch(api + '/download', {
+        headers: getAuthHeaders(),
+    }).then((response) => {
+        handleAuthError(response.status);
+        if (!response.ok) throw new Error('Download failed');
+        return response.blob();
+    }).then((blob) => {
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = 'current_books.json';
+        link.click();
+        URL.revokeObjectURL(downloadUrl);
+    }).catch(() => {
+        alert('Unable to download your current books.');
+    });
 });
 // -- Upload ───────────────────────────────────────────────────────────────────
 document.getElementById('upload-btn').addEventListener('click', () => {
@@ -154,6 +171,7 @@ document.getElementById('upload-file').addEventListener('change', (e) => {
 
         xhr.open('POST', api + '/upload', true);
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        setAuthHeader(xhr);
         xhr.send(JSON.stringify(uploadedBooks));
     };
 
@@ -207,6 +225,7 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
 
     xhr.open('POST', api, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send(JSON.stringify({
         title: titleInput.value,
         genre: genreInput.value,
@@ -263,6 +282,7 @@ document.getElementById('edit-btn').addEventListener('click', (e) => {
 
     xhr.open('PUT', api + '/' + bookIdInEdit, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send(JSON.stringify({
         title: titleInput.value,
         genre: genreInput.value,
@@ -287,6 +307,7 @@ function deleteBook(id) {
 
     xhr.open('DELETE', api + '/' + id, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send();
 }
 
@@ -376,9 +397,12 @@ function getAllBooks() {
         if (xhr.status == 200) {
             data = JSON.parse(xhr.response) || [];
             renderCurrentBooks(data);
+        } else {
+            handleAuthError(xhr.status);
         }
     };
     xhr.open('GET', api, true);
+    setAuthHeader(xhr);
     xhr.send();
 }
 

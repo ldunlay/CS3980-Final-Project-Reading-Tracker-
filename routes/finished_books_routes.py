@@ -1,6 +1,8 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from auth.authenticate import authenticate
+from auth.jwt_handler import TokenData
 from models.models import FinishedBook, FinishedBookRequest
 
 import logging
@@ -11,15 +13,20 @@ finished_books_router = APIRouter()
 
 
 @finished_books_router.get("")
-async def get_finished_books():
-    finished_books_list = await FinishedBook.find_all().to_list()
+async def get_finished_books(user: TokenData = Depends(authenticate)):
+    finished_books_list = await FinishedBook.find(
+        FinishedBook.owner_username == user.username
+    ).to_list()
     logger.info(f"viewing {len(finished_books_list)} finished books")
     return finished_books_list
 
 
 @finished_books_router.post("", status_code=201)
-async def create_finished_book(finishedBook: FinishedBookRequest) -> FinishedBook:
+async def create_finished_book(
+    finishedBook: FinishedBookRequest, user: TokenData = Depends(authenticate)
+) -> FinishedBook:
     new_finished_book = FinishedBook(
+        owner_username=user.username,
         title=finishedBook.title,
         author=finishedBook.author,
         num_pages=finishedBook.num_pages,
@@ -40,12 +47,14 @@ async def create_finished_book(finishedBook: FinishedBookRequest) -> FinishedBoo
 
 @finished_books_router.put("/{book_id}", status_code=200)
 async def edit_finished_book(
-    book_id: PydanticObjectId, editFinishedBook: FinishedBookRequest
+    book_id: PydanticObjectId,
+    editFinishedBook: FinishedBookRequest,
+    user: TokenData = Depends(authenticate),
 ) -> FinishedBook:
 
     book = await FinishedBook.get(book_id)
 
-    if not book:
+    if not book or book.owner_username != user.username:
         logger.warning(f"\t The finished book #{book_id} NOT Found.")
         raise HTTPException(status_code=404, detail="Finished book not found")
 
@@ -66,10 +75,12 @@ async def edit_finished_book(
 
 
 @finished_books_router.delete("/{book_id}", status_code=200)
-async def delete_finished_book(book_id: PydanticObjectId):
+async def delete_finished_book(
+    book_id: PydanticObjectId, user: TokenData = Depends(authenticate)
+):
     book = await FinishedBook.get(book_id)
 
-    if not book:
+    if not book or book.owner_username != user.username:
         logger.warning(f"\t The finished book #{book_id} NOT Found.")
         raise HTTPException(status_code=404, detail="Finished book not found")
 

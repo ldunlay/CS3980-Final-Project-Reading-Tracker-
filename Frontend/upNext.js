@@ -51,6 +51,7 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
 
     xhr.open('POST', api, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send(JSON.stringify({
         title: titleInput.value,
         genre: genreInput.value,
@@ -74,6 +75,7 @@ function deleteBook(id) {
 
     xhr.open('DELETE', api + '/' + id, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send();
 }
 
@@ -137,10 +139,13 @@ function getAllBooks() {
         if (xhr.status == 200) {
             data = JSON.parse(xhr.response) || [];
             renderUpNextBooks(data);
+        } else {
+            handleAuthError(xhr.status);
         }
     };
 
     xhr.open('GET', api, true);
+    setAuthHeader(xhr);
     xhr.send();
 }
 
