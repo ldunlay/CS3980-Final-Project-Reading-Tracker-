@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from models.users import User, SignupData, SigninData, TokenResponse
 from auth.hash_password import hash_password, verify_password
 from auth.jwt_handler import create_access_token
 
 router = APIRouter()
+
 
 @router.post("/signup")
 async def signup(data: SignupData):
@@ -15,27 +17,26 @@ async def signup(data: SignupData):
         )
 
     hashed = hash_password(data.password)
-    
+
     # Create the user document
     new_user = User(
         name=data.name,
         email=data.email.lower(),
         username=data.email.lower(),
-        password=hashed
+        password=hashed,
     )
     await new_user.create()
     return {"message": "Account created successfully."}
 
+
 @router.post("/signin")
-async def signin(data: SigninData) -> TokenResponse:
-    user = await User.find_one(User.email == data.email.lower())
-    
+async def signin(data: OAuth2PasswordRequestForm = Depends()) -> TokenResponse:
+    user = await User.find_one(User.email == data.username.lower())
+
     if not user or not verify_password(data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
-    token, expiry = create_access_token(
-        {"username": user.email, "role": user.role}
-    )
+    token, expiry = create_access_token({"username": user.email, "role": user.role})
 
     return TokenResponse(
         username=user.email,
