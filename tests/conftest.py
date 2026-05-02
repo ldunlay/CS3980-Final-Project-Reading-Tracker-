@@ -12,7 +12,7 @@ from models.users import User
 TEST_SECRET_KEY = "test_secret_key_for_tests_1234567890"
 
 os.environ["MONGODB_URI"] = (
-    "mongodb://localhost:27017"  # had to use MONGODB_URI instead of MONGO_DB url, that is how our connection file is set up
+    "mongodb://localhost:27017"  # had to use MONGODB_URI instead of MONGO_DB url, that is how our connection file is set up  # our connection file splits it into uri and db, so we had to do that here
 )
 os.environ["MONGODB_DB"] = "test_db"
 os.environ["SECRET_KEY"] = TEST_SECRET_KEY
