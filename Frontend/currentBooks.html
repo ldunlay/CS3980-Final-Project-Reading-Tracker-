@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-    
+
     <title>Book Nook — Current Books</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
 </head>
+
 <body>
 
     // genre drop down list
@@ -43,7 +45,7 @@
         <a href="currentBooks.html" class="active">Current Books</a>
         <a href="upNext.html">Up Next</a>
         <a href="finishedBooks.html">Finished Books</a>
-        <a href="favoriteBooks.html">Favorite Books</a>
+
     </section>
 
     <main class="main">
@@ -81,7 +83,8 @@
                         </div>
                         <div class="col-md-6">
                             <label for="genre" class="form-label">Genre</label>
-                            <input type="text" class="form-control" id="genre" list="genre-options" autocomplete="off" placeholder="Search or type a genre..." />
+                            <input type="text" class="form-control" id="genre" list="genre-options" autocomplete="off"
+                                placeholder="Search or type a genre..." />
                         </div>
                         <div class="col-md-6">
                             <label for="num_pages" class="form-label">Number of Pages</label>
@@ -107,8 +110,10 @@
                     <div class="text-danger mt-2 small" id="msg"></div>
                 </div>
                 <div class="modal-footer">
-                    <button id="close-add-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button id="add-btn" type="button" class="btn" style="background:var(--accent);color:#fff;">Add Book</button>
+                    <button id="close-add-modal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button id="add-btn" type="button" class="btn" style="background:var(--accent);color:#fff;">Add
+                        Book</button>
                 </div>
             </div>
         </div>
@@ -134,7 +139,8 @@
                         </div>
                         <div class="col-md-6">
                             <label for="genreEdit" class="form-label">Genre</label>
-                            <input type="text" class="form-control" id="genreEdit" list="genre-options" autocomplete="off" placeholder="Search or type a genre..." />
+                            <input type="text" class="form-control" id="genreEdit" list="genre-options"
+                                autocomplete="off" placeholder="Search or type a genre..." />
                         </div>
                         <div class="col-md-6">
                             <label for="num_pagesEdit" class="form-label">Number of Pages</label>
@@ -160,7 +166,8 @@
                     <div class="text-danger mt-2 small" id="msgEdit"></div>
                 </div>
                 <div class="modal-footer">
-                    <button id="close-edit-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="close-edit-modal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button>
                     <button id="edit-btn" type="button" class="btn btn-warning">Update Book</button>
                 </div>
             </div>
@@ -191,7 +198,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="finish-review" class="form-label">Review (optional)</label>
-                        <textarea class="form-control" id="finish-review" rows="4" placeholder="What did you think?"></textarea>
+                        <textarea class="form-control" id="finish-review" rows="4"
+                            placeholder="What did you think?"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="finish-date" class="form-label">Date Finished</label>
@@ -200,7 +208,8 @@
                     <div class="text-danger small" id="msgFinish"></div>
                 </div>
                 <div class="modal-footer">
-                    <button id="close-finish-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="close-finish-modal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button>
                     <button id="finish-btn" type="button" class="btn" style="background:var(--success);color:#fff;">
                         Mark as Finished
                     </button>
@@ -216,4 +225,5 @@
     <script src="currentBooks.js"></script>
 
 </body>
+
 </html>
