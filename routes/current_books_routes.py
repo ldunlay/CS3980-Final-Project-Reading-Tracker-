@@ -1,7 +1,7 @@
 from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import ValidationError
-
+import os
 from auth.authenticate import authenticate
 from auth.jwt_handler import TokenData
 from models.models import CurrentBook, CurrentBookRequest
@@ -149,14 +149,19 @@ async def delete_current_book(
 
 @current_books_router.get("/download")
 async def download_current_books(user: TokenData = Depends(authenticate)):
-    books = (
-        await CurrentBook.find(CurrentBook.owner_username == user.username).to_list()
-    )  # get all of our current books in a list
+    books = await CurrentBook.find(
+        CurrentBook.owner_username == user.username
+    ).to_list()  # get all of our current books in a list
+
+    os.makedirs(
+        "downloads", exist_ok=True
+    )  # use python built in module os to make a downloads folder if it doesn't exist
+
     file_path = (
         "downloads/current_books.json"  # save to the downloads folder on the server
     )
 
-    with open(file_path, "w") as f:  # open the file path and write the books to it
+    with open(file_path, "w") as f:  # open the file and write the books to it
         json.dump([book.dict() for book in books], f, default=str)
 
     return FileResponse(
