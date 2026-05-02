@@ -9,10 +9,12 @@ from database.connection import get_settings, initialize_database
 from main import app
 from models.users import User
 
-TEST_DATABASE_URL = "mongodb://localhost:27017/test_db"
 TEST_SECRET_KEY = "test_secret_key_for_tests_1234567890"
 
-os.environ["DATABASE_URL"] = TEST_DATABASE_URL
+os.environ["MONGODB_URI"] = (
+    "mongodb://localhost:27017"  # had to use MONGODB_URI instead of MONGO_DB url, that is how our connection file is set up
+)
+os.environ["MONGODB_DB"] = "test_db"
 os.environ["SECRET_KEY"] = TEST_SECRET_KEY
 get_settings.cache_clear()
 jwt_handler.SECRET_KEY = TEST_SECRET_KEY
