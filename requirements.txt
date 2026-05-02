@@ -9,3 +9,5 @@ resend
 python-dotenv
 pyjwt
 pydantic-settings
+pytest
+httpx
