@@ -3,11 +3,8 @@ from httpx import AsyncClient
 
 from models.models import (
     CurrentBook,
-    CurrentBookRequest,
     UpNext,
-    UpNextRequest,
     FinishedBook,
-    FinishedBookRequest,
 )
 
 # creation of book objects test
@@ -80,16 +77,40 @@ async def mock_finished_book() -> FinishedBook:
     return new_finished_book
 
 
-# test of current books requests
+# test of current get books requests
 
 
 @pytest.mark.anyio
 async def test_get_current_books(
     default_client: AsyncClient, mock_current_book: CurrentBook, access_token: str
 ) -> None:
-    response = await default_client.get("/api/current-books")
+
     headers = {"Authorization": f"Bearer {access_token}"}
     response = await default_client.get("/api/current-books", headers=headers)
 
     assert response.status_code == 200
     assert response.json()[0]["_id"] == str(mock_current_book.id)
+
+
+@pytest.mark.anyio
+async def test_get_upnext_books(
+    default_client: AsyncClient, mock_upnext_book: UpNext, access_token: str
+) -> None:
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = await default_client.get("/api/up-next", headers=headers)
+
+    assert response.status_code == 200
+    assert response.json()[0]["_id"] == str(mock_upnext_book.id)
+
+
+@pytest.mark.anyio
+async def test_get_finished_books(
+    default_client: AsyncClient, mock_finished_book: FinishedBook, access_token: str
+) -> None:
+
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = await default_client.get("/api/finished-books", headers=headers)
+
+    assert response.status_code == 200
+    assert response.json()[0]["_id"] == str(mock_finished_book.id)
