@@ -17,16 +17,16 @@ logger = logging.getLogger(__name__)
 current_books_router = APIRouter()
 
 
-@current_books_router.get("")
+@current_books_router.get("")  # logger ok
 async def get_current_books(user: TokenData = Depends(authenticate)):
     current_books_list = await CurrentBook.find(
         CurrentBook.owner_username == user.username
     ).to_list()
-    logger.info(f"viewing {len(current_books_list)} current_books_list")
+    logger.info(f"{user.username} is viewing {len(current_books_list)} current books.")
     return current_books_list
 
 
-@current_books_router.post("", status_code=201)
+@current_books_router.post("", status_code=201)  # logger ok
 async def create_new_current_book(
     currentBook: CurrentBookRequest, user: TokenData = Depends(authenticate)
 ) -> CurrentBook:
@@ -41,14 +41,15 @@ async def create_new_current_book(
         startDate=currentBook.startDate,
         current_page=currentBook.current_page,
     )
+    logger.info(f"User [{user.username}] is creating a new current book.")
     inserted_book = await new_current_book.insert()
     logger.info(
-        f"New book '{inserted_book.title}' created with id [{inserted_book.id}]"
+        f"{user.username} created new book '{inserted_book.title}' with id [{inserted_book.id}]"
     )
     return inserted_book
 
 
-@current_books_router.post("/upload", status_code=201)
+@current_books_router.post("/upload", status_code=201)  # logger ok
 async def upload_current_books(
     uploaded_books: list[dict], user: TokenData = Depends(authenticate)
 ) -> list[CurrentBook]:
@@ -91,11 +92,13 @@ async def upload_current_books(
     for book in imported_books:
         inserted_books.append(await book.insert())
 
-    logger.info(f"Imported {len(inserted_books)} current books from uploaded JSON.")
+    logger.info(
+        f"{user.username} imported {len(inserted_books)} current books from uploaded JSON."
+    )
     return inserted_books
 
 
-@current_books_router.put("/{book_id}", status_code=200)
+@current_books_router.put("/{book_id}", status_code=200)  # logger ok
 async def edit_current_book(
     book_id: PydanticObjectId,
     editCurrentBook: CurrentBookRequest,
@@ -118,9 +121,9 @@ async def edit_current_book(
     book.publish_date = editCurrentBook.publish_date
     book.startDate = editCurrentBook.startDate
     book.current_page = editCurrentBook.current_page
-
+    logger.info(f"{user.username} is updating '{book.title}' with id [{book.id}].")
     updated_book = await book.save()
-    logger.info(f"'{book.title}' with id [{book.id}] was updated.")
+    logger.info(f"{user.username} updated '{book.title}' with id [{book.id}].")
     return updated_book
 
 
@@ -135,9 +138,9 @@ async def delete_current_book(
         raise HTTPException(
             status_code=404, detail="Book not found"
         )  # if it is not found, raise error
-
+    logger.info(f"{user.username} is deleting book with id [{book_id}].")
     await book.delete()  # delete from mongo db
-    logger.info(f"\t Book #[{book_id}] is deleted.")
+    logger.info(f"{user.username} deleted book with id [{book_id}].")
     return {"message": "Book deleted successfully."}
 
 
@@ -163,7 +166,7 @@ async def download_current_books(user: TokenData = Depends(authenticate)):
 
     with open(file_path, "w") as f:  # open the file and write the books to it
         json.dump([book.dict() for book in books], f, default=str)
-
+    logger.info(f"{user.username} downloaded the current books list.")
     return FileResponse(
         path=file_path,
         filename="current_books.json",
