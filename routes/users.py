@@ -13,7 +13,7 @@ async def signup(data: SignupData):
     existing_user = await User.find_one(User.email == data.email.lower())
     if existing_user:
         raise HTTPException(
-            status_code=400, detail="A user with that email already exists."
+            status_code=409, detail="A user with that email already exists."
         )
 
     hashed = hash_password(data.password)
