@@ -9,6 +9,12 @@ from database.connection import get_settings, initialize_database
 from main import app
 from models.users import User
 
+from models.models import (
+    CurrentBook,
+    UpNext,
+    FinishedBook,
+)
+
 TEST_SECRET_KEY = "test_secret_key_for_tests_1234567890"
 
 os.environ["MONGODB_URI"] = (
@@ -24,6 +30,9 @@ jwt_handler.SECRET_KEY = TEST_SECRET_KEY
 async def default_client() -> AsyncGenerator[AsyncClient, None]:
     await initialize_database()
     await User.find_all().delete()
+    await CurrentBook.find_all().delete()
+    await UpNext.find_all().delete()
+    await FinishedBook.find_all().delete()
 
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://app"
