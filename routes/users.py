@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from models.users import User, SignupData, SigninData, TokenResponse
 from auth.hash_password import hash_password, verify_password
 from auth.jwt_handler import create_access_token
+from auth.authenticate import authenticate, get_admin_user
 
 router = APIRouter()
 
@@ -44,3 +45,16 @@ async def signin(data: OAuth2PasswordRequestForm = Depends()) -> TokenResponse:
         access_token=token,
         expiry=expiry,
     )
+
+@router.get("/admin/users", dependencies=[Depends(get_admin_user)])
+async def get_all_users():
+    return await User.find_all().to_list()
+
+
+@router.delete("/admin/users/{user_id}", dependencies=[Depends(get_admin_user)])
+async def delete_user(user_id: str):
+    user = await User.get(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    await user.delete()
+    return {"message": "User deleted successfully"}

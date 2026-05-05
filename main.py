@@ -53,6 +53,8 @@ async def root():
 def health_check():
     return {"status": "ok"}
 
+os.makedirs("static/images", exist_ok=True)  # create the folder for images if it doesn't already exist
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/", StaticFiles(directory="Frontend", html=True), name="frontend")
 
 

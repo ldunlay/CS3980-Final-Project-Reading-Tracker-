@@ -19,6 +19,36 @@ function renderStars(rating) {
     return html;
 }
 
+// ── Upload cover image ────────────────────────────────────────────────────────
+function uploadFinishedCover(bookId) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+        const file = input.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const updated = JSON.parse(xhr.response);
+                const book = finishedData.find(x => x._id == bookId);
+                if (book) book.cover_image = updated.cover_image;
+                renderFinishedBooks(finishedData);
+            } else {
+                alert('Failed to upload cover image.');
+            }
+        };
+        xhr.open('POST', finishedApi + '/' + bookId + '/cover', true);
+        setAuthHeader(xhr);
+        xhr.send(formData);
+    };
+    input.click();
+}
+
 // ── Star rating logic for edit modal ─────────────────────────────────────────
 document.getElementById('star-rating-edit').addEventListener('mouseover', (e) => {
     if (e.target.classList.contains('star')) highlightEditStars(parseInt(e.target.dataset.value));
@@ -31,6 +61,86 @@ document.getElementById('star-rating-edit').addEventListener('click', (e) => {
         selectedEditRating = parseInt(e.target.dataset.value);
         highlightEditStars(selectedEditRating);
     }
+});
+
+// ── Star rating logic for add modal ──────────────────────────────────────────
+let selectedAddRating = 0;
+
+document.getElementById('star-rating-add').addEventListener('mouseover', (e) => {
+    if (e.target.classList.contains('star')) highlightAddStars(parseInt(e.target.dataset.value));
+});
+document.getElementById('star-rating-add').addEventListener('mouseout', () => {
+    highlightAddStars(selectedAddRating);
+});
+document.getElementById('star-rating-add').addEventListener('click', (e) => {
+    if (e.target.classList.contains('star')) {
+        selectedAddRating = parseInt(e.target.dataset.value);
+        highlightAddStars(selectedAddRating);
+    }
+});
+
+function highlightAddStars(count) {
+    document.querySelectorAll('#star-rating-add .star').forEach((star) => {
+        star.style.color = parseInt(star.dataset.value) <= count ? '#f5a623' : '#ccc';
+    });
+}
+
+// ── Add finished book ─────────────────────────────────────────────────────────
+document.getElementById('add-finished-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const msgDiv = document.getElementById('msgAdd');
+    const titleInput = document.getElementById('add-title');
+    const authorInput = document.getElementById('add-author');
+    const startDateInput = document.getElementById('add-start-date');
+    const finishDateInput = document.getElementById('add-finish-date');
+
+    if (!titleInput.value || !authorInput.value || !startDateInput.value || !finishDateInput.value) {
+        msgDiv.innerHTML = 'Please provide a Title, Author, Start Date, and Finish Date.';
+        return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+        if (xhr.status === 201) {
+            const newBook = JSON.parse(xhr.response);
+            finishedData.push(newBook);
+            renderFinishedBooks(finishedData);
+            document.getElementById('close-add-finished-modal').click();
+
+            // Reset form
+            titleInput.value = '';
+            authorInput.value = '';
+            document.getElementById('add-genre').value = '';
+            document.getElementById('add-num-pages').value = '';
+            document.getElementById('add-isbn').value = '';
+            document.getElementById('add-publish-date').value = '';
+            document.getElementById('add-start-date').value = '';
+            document.getElementById('add-finish-date').value = '';
+            document.getElementById('add-review').value = '';
+            selectedAddRating = 0;
+            highlightAddStars(0);
+            msgDiv.innerHTML = '';
+        } else {
+            msgDiv.innerHTML = 'Something went wrong. Please try again.';
+        }
+    };
+
+    xhr.open('POST', finishedApi, true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
+    xhr.send(JSON.stringify({
+        title: titleInput.value,
+        author: authorInput.value,
+        genre: document.getElementById('add-genre').value || null,
+        num_pages: document.getElementById('add-num-pages').value ? parseInt(document.getElementById('add-num-pages').value) : null,
+        isbn: document.getElementById('add-isbn').value || null,
+        publish_date: document.getElementById('add-publish-date').value || null,
+        startDate: document.getElementById('add-start-date').value || null,
+        finishDate: document.getElementById('add-finish-date').value || null,
+        rating: selectedAddRating || null,
+        review: document.getElementById('add-review').value || null,
+    }));
 });
 
 function highlightEditStars(count) {
@@ -47,8 +157,16 @@ function openEditFinishedModal(id) {
 
     selectedEditRating = book.rating || 0;
     highlightEditStars(selectedEditRating);
-    document.getElementById('edit-review-text').value = book.review || '';
+
+    document.getElementById('edit-title').value = book.title || '';
+    document.getElementById('edit-author').value = book.author || '';
+    document.getElementById('edit-genre').value = book.genre || '';
+    document.getElementById('edit-num-pages').value = book.num_pages || '';
+    document.getElementById('edit-isbn').value = book.isbn || '';
+    document.getElementById('edit-publish-date').value = book.publish_date || '';
+    document.getElementById('edit-start-date').value = book.startDate || '';
     document.getElementById('edit-finish-date').value = book.finishDate || '';
+    document.getElementById('edit-review-text').value = book.review || '';
     document.getElementById('msgEditFinished').innerHTML = '';
 
     const modal = new bootstrap.Modal(document.getElementById('modal-edit-finished'));
@@ -60,8 +178,13 @@ document.getElementById('edit-finished-btn').addEventListener('click', (e) => {
     e.preventDefault();
 
     const msgDiv = document.getElementById('msgEditFinished');
-    if (!selectedEditRating) {
-        msgDiv.innerHTML = 'Please select a star rating.';
+    const titleVal = document.getElementById('edit-title').value;
+    const authorVal = document.getElementById('edit-author').value;
+    const startDateVal = document.getElementById('edit-start-date').value;
+    const finishDateVal = document.getElementById('edit-finish-date').value;
+
+    if (!titleVal || !authorVal || !startDateVal || !finishDateVal) {
+        msgDiv.innerHTML = 'Please provide a Title, Author, Start Date, and Finish Date.';
         return;
     }
 
@@ -69,10 +192,16 @@ document.getElementById('edit-finished-btn').addEventListener('click', (e) => {
     if (!book) return;
 
     const updatedBook = {
-        ...book,
-        rating: selectedEditRating,
-        review: document.getElementById('edit-review-text').value,
-        finishDate: document.getElementById('edit-finish-date').value,
+        title: titleVal,
+        author: authorVal,
+        genre: document.getElementById('edit-genre').value || null,
+        num_pages: document.getElementById('edit-num-pages').value ? parseInt(document.getElementById('edit-num-pages').value) : null,
+        isbn: document.getElementById('edit-isbn').value || null,
+        publish_date: document.getElementById('edit-publish-date').value || null,
+        startDate: startDateVal,
+        finishDate: finishDateVal,
+        rating: selectedEditRating || null,
+        review: document.getElementById('edit-review-text').value || null,
     };
 
     const xhr = new XMLHttpRequest();
@@ -125,8 +254,18 @@ function renderFinishedBooks(data) {
     }
 
     data.forEach(book => {
+        const coverHtml = book.cover_image
+            ? `<img src="${book.cover_image}" alt="Cover" class="book-cover" />`
+            : `<div class="book-cover-placeholder">📖</div>`;
+
         container.innerHTML += `
         <div id="finished-book-${book._id}" class="book-card">
+            <div class="book-cover-wrap">
+                ${coverHtml}
+                <button class="cover-upload-btn" onclick="uploadFinishedCover('${book._id}')">
+                    📷 ${book.cover_image ? 'Change Cover' : 'Add Cover'}
+                </button>
+            </div>
             <div class="book-title">${book.title}</div>
             <div class="book-meta">
                 <div class="book-meta-row">

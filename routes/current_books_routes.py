@@ -1,12 +1,14 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from pydantic import ValidationError
 import os
-from auth.authenticate import authenticate
+from auth.authenticate import authenticate, get_admin_user
 from auth.jwt_handler import TokenData
 from models.models import CurrentBook, CurrentBookRequest
 from fastapi.responses import FileResponse
-
+import shutil
+import uuid
+from typing import Annotated
 import json
 
 import logging
@@ -172,3 +174,52 @@ async def download_current_books(user: TokenData = Depends(authenticate)):
         filename="current_books.json",
         media_type="application/json",  # this sends it to the user browser and saves it to their downloads folder
     )
+
+# upload a book cover image
+
+@current_books_router.post("/{book_id}/cover", status_code=200)
+async def upload_cover_image(
+    book_id: PydanticObjectId,
+    file: Annotated[UploadFile, File()],
+    user: TokenData = Depends(authenticate),
+) -> CurrentBook:
+    book = await CurrentBook.get(book_id)
+
+    if not book or book.owner_username != user.username:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    # Only allow image files
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="File must be an image")
+
+    # Save to static/images folder
+
+    os.makedirs("static/images", exist_ok=True)
+    extension = file.filename.split(".")[-1]
+    filename = f"{uuid.uuid4()}.{extension}"
+    file_path = f"static/images/{filename}"
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    # Save path to the book in MongoDB
+    book.cover_image = f"/static/images/{filename}"
+    await book.save()
+    logger.info(f"{user.username} uploaded cover for book [{book_id}].")
+    return book
+
+# Admin-only routes
+@current_books_router.get("/admin/all", dependencies=[Depends(get_admin_user)])
+async def admin_get_all_current_books():
+    all_books = await CurrentBook.find_all().to_list()
+    logger.info(f"Admin viewed all {len(all_books)} current books.")
+    return all_books
+
+@current_books_router.delete("/admin/{book_id}", dependencies=[Depends(get_admin_user)])
+async def admin_delete_current_book(book_id: PydanticObjectId):
+    book = await CurrentBook.get(book_id)
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+    await book.delete()
+    logger.info(f"Admin deleted current book [{book_id}].")
+    return {"message": "Book deleted successfully."}

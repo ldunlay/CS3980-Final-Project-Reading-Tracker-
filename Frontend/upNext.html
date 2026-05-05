@@ -19,6 +19,7 @@
         <a href="currentBooks.html">Current Books</a>
         <a href="upNext.html" class="active">Up Next</a>
         <a href="finishedBooks.html">Finished Books</a>
+        <a href="admin.html" class="admin-only">Admin</a>
         <a href="#" onclick="redirectToSignin()">Logout</a>
 
     </section>
@@ -87,10 +88,61 @@
         </div>
     </div>
 
+<!-- ── Edit Modal ── -->
+<div id="modal-edit" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="titleEdit" class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="titleEdit" />
+                    </div>
+                    <div class="col-12">
+                        <label for="authorEdit" class="form-label">Author *</label>
+                        <input type="text" class="form-control" id="authorEdit" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="genreEdit" class="form-label">Genre</label>
+                        <input type="text" class="form-control" id="genreEdit" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="num_pagesEdit" class="form-label">Number of Pages</label>
+                        <input type="number" class="form-control" id="num_pagesEdit" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="isbnEdit" class="form-label">ISBN</label>
+                        <input type="text" class="form-control" id="isbnEdit" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="publish_dateEdit" class="form-label">Publish Date</label>
+                        <input type="date" class="form-control" id="publish_dateEdit" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="added_dateEdit" class="form-label">Date Added</label>
+                        <input type="date" class="form-control" id="added_dateEdit" />
+                    </div>
+                </div>
+                <div class="text-danger mt-2 small" id="msgEdit"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="close-edit-modal" type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+                <button id="edit-btn" type="button" class="btn btn-warning">Update Book</button>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="auth.js"></script>
+    <script>applyAdminUI();</script>
     <script src="upNext.js"></script>
 
 </body>

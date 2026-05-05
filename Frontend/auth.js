@@ -37,3 +37,27 @@ function handleAuthError(status) {
         redirectToSignin();
     }
 }
+
+function isAdmin() {
+    const user = getStoredUser();
+    return user.role === 'Admin';
+}
+
+function requireAdmin() {
+    const user = requireSignedInUser();
+    if (!user) return;
+    if (user.role !== 'Admin') {
+        window.location.href = 'index.html';
+    }
+}
+
+function applyAdminUI() {
+    const adminLinks = document.querySelectorAll('.admin-only');
+    adminLinks.forEach(el => {
+        if (isAdmin()) {
+            el.style.display = '';
+        } else {
+            el.remove();
+        }
+    });
+}

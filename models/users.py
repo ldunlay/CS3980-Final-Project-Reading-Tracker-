@@ -1,6 +1,11 @@
 from beanie import Document
 from datetime import datetime
 from pydantic import EmailStr, BaseModel
+from enum import StrEnum
+
+class UserRole(StrEnum):
+    BasicUser = "BasicUser"
+    Admin = "Admin"
 
 # This is for the Database (MongoDB)
 class User(Document):
@@ -8,7 +13,7 @@ class User(Document):
     email: EmailStr
     username: str
     password: str  # This will store the hashed password
-    role: str = "BasicUser"
+    role: str = UserRole.BasicUser
 
     class Settings:
         name = "users"  # The collection name in Mongo

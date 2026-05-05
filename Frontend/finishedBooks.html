@@ -19,28 +19,134 @@
         <a href="currentBooks.html">Current Books</a>
         <a href="upNext.html">Up Next</a>
         <a href="finishedBooks.html" class="active">Finished Books</a>
+        <a href="admin.html" class="admin-only">Admin</a>
         <a href="#" onclick="redirectToSignin()">Logout</a>
-
-
     </section>
 
     <main class="main">
         <div class="page-header">
             <h1 class="page-title">Finished <span>Books</span></h1>
+            <div class="header-actions">
+                <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modal-add-finished">
+                    + Add New Book
+                </button>
+            </div>
         </div>
         <div id="finished-books" class="book-grid"></div>
     </main>
 
-    <!-- ── Edit Review Modal ── -->
-    <div id="modal-edit-finished" class="modal" tabindex="-1">
+    <!-- ── Add Finished Book Modal ── -->
+    <div id="modal-add-finished" class="modal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Review</h5>
+                    <h5 class="modal-title">Add a Finished Book</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <div class="mb-3">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="add-title" class="form-label">Title *</label>
+                            <input type="text" class="form-control" id="add-title" />
+                        </div>
+                        <div class="col-12">
+                            <label for="add-author" class="form-label">Author *</label>
+                            <input type="text" class="form-control" id="add-author" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add-genre" class="form-label">Genre</label>
+                            <input type="text" class="form-control" id="add-genre" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add-num-pages" class="form-label">Number of Pages</label>
+                            <input type="number" class="form-control" id="add-num-pages" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add-isbn" class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="add-isbn" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add-publish-date" class="form-label">Publish Date</label>
+                            <input type="date" class="form-control" id="add-publish-date" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add-start-date" class="form-label">Start Date *</label>
+                            <input type="date" class="form-control" id="add-start-date" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add-finish-date" class="form-label">Finish Date *</label>
+                            <input type="date" class="form-control" id="add-finish-date" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Rating</label>
+                            <div class="star-row" id="star-rating-add">
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="add-review" class="form-label">Review</label>
+                            <textarea class="form-control" id="add-review" rows="3" placeholder="What did you think?"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-danger mt-2 small" id="msgAdd"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="close-add-finished-modal" type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button id="add-finished-btn" type="button" class="btn"
+                        style="background:var(--accent);color:#fff;">Add Book</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Edit Review Modal ── -->
+<div id="modal-edit-finished" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="edit-title" class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="edit-title" />
+                    </div>
+                    <div class="col-12">
+                        <label for="edit-author" class="form-label">Author *</label>
+                        <input type="text" class="form-control" id="edit-author" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit-genre" class="form-label">Genre</label>
+                        <input type="text" class="form-control" id="edit-genre" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit-num-pages" class="form-label">Number of Pages</label>
+                        <input type="number" class="form-control" id="edit-num-pages" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit-isbn" class="form-label">ISBN</label>
+                        <input type="text" class="form-control" id="edit-isbn" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit-publish-date" class="form-label">Publish Date</label>
+                        <input type="date" class="form-control" id="edit-publish-date" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit-start-date" class="form-label">Start Date *</label>
+                        <input type="date" class="form-control" id="edit-start-date" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit-finish-date" class="form-label">Finish Date *</label>
+                        <input type="date" class="form-control" id="edit-finish-date" />
+                    </div>
+                    <div class="col-12">
                         <label class="form-label">Rating</label>
                         <div class="star-row" id="star-rating-edit">
                             <span class="star" data-value="1">&#9733;</span>
@@ -50,29 +156,27 @@
                             <span class="star" data-value="5">&#9733;</span>
                         </div>
                     </div>
-                    <div class="mb-3">
+                    <div class="col-12">
                         <label for="edit-review-text" class="form-label">Review</label>
                         <textarea class="form-control" id="edit-review-text" rows="4"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="edit-finish-date" class="form-label">Date Finished</label>
-                        <input type="date" class="form-control" id="edit-finish-date" />
-                    </div>
-                    <div class="text-danger small" id="msgEditFinished"></div>
                 </div>
-                <div class="modal-footer">
-                    <button id="close-edit-finished-modal" type="button" class="btn btn-secondary"
-                        data-bs-dismiss="modal">Cancel</button>
-                    <button id="edit-finished-btn" type="button" class="btn btn-warning">Update</button>
-                </div>
+                <div class="text-danger small mt-2" id="msgEditFinished"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="close-edit-finished-modal" type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+                <button id="edit-finished-btn" type="button" class="btn btn-warning">Update</button>
             </div>
         </div>
     </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="auth.js"></script>
+    <script>applyAdminUI();</script>
     <script src="finishedBooks.js"></script>
 
 </body>

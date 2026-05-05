@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
-    <title>Book Nook — Current Books</title>
+    <title> Book Nook — Current Books</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
 </head>
@@ -40,11 +40,12 @@
     </datalist>
 
     <section class="sidebar">
-        <div class="sidebar-brand"> Book Nook</div>
+        <div class="sidebar-brand"> 📚 Book Nook</div>
         <a href="index.html">Home</a>
         <a href="currentBooks.html" class="active">Current Books</a>
         <a href="upNext.html">Up Next</a>
         <a href="finishedBooks.html">Finished Books</a>
+        <a href="admin.html" class="admin-only">Admin</a>
         <a href="#" onclick="redirectToSignin()">Logout</a>
 
     </section>
@@ -223,6 +224,7 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="auth.js"></script>
+    <script>applyAdminUI();</script>
     <script src="currentBooks.js"></script>
 
 </body>
