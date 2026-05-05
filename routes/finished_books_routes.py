@@ -112,7 +112,7 @@ async def edit_finished_book(
     book.finishDate = editFinishedBook.finishDate
     book.rating = editFinishedBook.rating
     book.review = editFinishedBook.review
-    book.cover_image = editFinishedBook.cover_image
+    book.cover_image = editFinishedBook.cover_image or book.cover_image
 
     updated_book = await book.save()
     logger.info(f"Finished book '{book.title}' with id [{book.id}] was updated.")
