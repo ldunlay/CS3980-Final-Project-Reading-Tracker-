@@ -81,6 +81,8 @@ document.getElementById('finish-btn').addEventListener('click', (e) => {
         finishDate: document.getElementById('finish-date').value,
         rating: selectedRating,
         review: document.getElementById('finish-review').value,
+        cover_image: book.cover_image || null,
+
     };
 
     const xhrPost = new XMLHttpRequest();

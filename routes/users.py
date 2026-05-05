@@ -46,11 +46,12 @@ async def signin(data: OAuth2PasswordRequestForm = Depends()) -> TokenResponse:
         expiry=expiry,
     )
 
+# admins can view the list of all users
 @router.get("/admin/users", dependencies=[Depends(get_admin_user)])
 async def get_all_users():
     return await User.find_all().to_list()
 
-
+# admins can delete a specific user from the database
 @router.delete("/admin/users/{user_id}", dependencies=[Depends(get_admin_user)])
 async def delete_user(user_id: str):
     user = await User.get(user_id)

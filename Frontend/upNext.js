@@ -157,6 +157,76 @@ function deleteBook(id) {
     xhr.send();
 }
 
+// ── Move to Currently Reading ─────────────────────────────────────────────────
+let bookIdToMove = 0;
+
+function openMoveModal(id) {
+    bookIdToMove = id;
+    const book = data.find((x) => x._id == id);
+    if (!book) return;
+
+    document.getElementById('move-book-title').textContent = book.title;
+    document.getElementById('move-start-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('msgMove').innerHTML = '';
+
+    const modal = new bootstrap.Modal(document.getElementById('modal-move'));
+    modal.show();
+}
+
+document.getElementById('move-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const msgDiv = document.getElementById('msgMove');
+    const startDate = document.getElementById('move-start-date').value;
+
+    if (!startDate) {
+        msgDiv.innerHTML = 'Please provide a start date.';
+        return;
+    }
+
+    const book = data.find((x) => x._id == bookIdToMove);
+    if (!book) return;
+
+    const currentBook = {
+        title: book.title,
+        author: book.author,
+        genre: book.genre,
+        num_pages: book.num_pages,
+        isbn: book.isbn,
+        publish_date: book.publish_date,
+        startDate: startDate,
+        current_page: null,
+        cover_image: book.cover_image || null,
+    };
+
+    // POST to current books
+    const xhrPost = new XMLHttpRequest();
+    xhrPost.onload = () => {
+        if (xhrPost.status === 201) {
+            // DELETE from up next
+            const xhrDelete = new XMLHttpRequest();
+            xhrDelete.onload = () => {
+                if (xhrDelete.status === 200) {
+                    data = data.filter((x) => x._id != bookIdToMove);
+                    renderUpNextBooks(data);
+                    document.getElementById('close-move-modal').click();
+                }
+            };
+            xhrDelete.open('DELETE', api + '/' + bookIdToMove, true);
+            xhrDelete.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            setAuthHeader(xhrDelete);
+            xhrDelete.send();
+        } else {
+            msgDiv.innerHTML = 'Something went wrong. Please try again.';
+        }
+    };
+
+    xhrPost.open('POST', 'http://127.0.0.1:8000/api/current-books', true);
+    xhrPost.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhrPost);
+    xhrPost.send(JSON.stringify(currentBook));
+});
+
 // ── Set book in edit modal ────────────────────────────────────────────────────
 function setBookInEdit(id) {
     bookIdInEdit = id;
@@ -236,6 +306,9 @@ function renderUpNextBooks(data) {
                     </button>
                     <button class="action-btn delete" onclick="deleteBook('${book._id}')">
                         Delete
+                    </button>
+                    <button class="action-btn finish" onclick="openMoveModal('${book._id}')">
+                        Start Reading
                     </button>
                 </div>
             </div>

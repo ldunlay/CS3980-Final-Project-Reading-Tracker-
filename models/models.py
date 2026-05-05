@@ -29,6 +29,7 @@ class CurrentBookRequest(BaseModel):  # inherits from BaseModel for input valida
     publish_date: date | None = None
     current_page: int | None = None
     startDate: date
+    cover_image: str | None = None
 
 
 class UpNext(Document):  # inherits from Document for mapping to MongoDB
@@ -55,6 +56,7 @@ class UpNextRequest(BaseModel):  # inherits from BaseModel for input validation
     isbn: str | None = None
     publish_date: date | None = None
     added_date: date | None = None
+    cover_image: str | None = None
 
 class FinishedBook(Document):  # inherits from Document for mapping to MongoDB
  
@@ -86,3 +88,4 @@ class FinishedBookRequest(BaseModel):  # inherits from BaseModel for input valid
     finishDate: date | None = None
     rating: int | None = None
     review: str | None = None
+    cover_image: str | None = None

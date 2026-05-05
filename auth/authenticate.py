@@ -19,6 +19,7 @@ async def authenticate(token: str = Depends(oauth2_scheme)) -> TokenData:
 
     return token_data
 
+# gatekeeps admin-only routes
 async def get_admin_user(token_data: TokenData = Depends(authenticate)) -> TokenData:
     if token_data.role != "Admin":
         raise HTTPException(

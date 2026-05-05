@@ -80,6 +80,7 @@ async def upload_upnext_cover(
     return book
 
 
+
 @upnext_router.put("/{book_id}", status_code=200)
 async def edit_upnext_book(
     book_id: PydanticObjectId,

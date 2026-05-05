@@ -42,6 +42,8 @@ async def create_new_current_book(
         publish_date=currentBook.publish_date,
         startDate=currentBook.startDate,
         current_page=currentBook.current_page,
+        cover_image=currentBook.cover_image,
+
     )
     logger.info(f"User [{user.username}] is creating a new current book.")
     inserted_book = await new_current_book.insert()
