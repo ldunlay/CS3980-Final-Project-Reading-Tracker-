@@ -19,7 +19,7 @@ or
 ```bash
 .\venv\Scripts\Activate.ps1
 ```
-**3.** Download the required packages:
+**3.** Install the necessary dependencies:
 ```bash
 pip install -r requirements.txt
 ```
@@ -28,6 +28,7 @@ pip install -r requirements.txt
 ```bash
 uvicorn main:app --reload
 ```
+The API should run locally at `http://127.0.0.1:8000`.
 
 ___
 
