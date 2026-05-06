@@ -19,7 +19,7 @@ or
 ```bash
 .\venv\Scripts\Activate.ps1
 ```
-**3.** Download the required packages:
+**3.** Install the necessary dependencies:
 ```bash
 pip install -r requirements.txt
 ```
@@ -28,12 +28,29 @@ pip install -r requirements.txt
 ```bash
 uvicorn main:app --reload
 ```
+The API should run locally at `http://127.0.0.1:8000`.
 
-**MongoDB**
+___
 
-**1.** Copy `.env.example` to `.env`.
+## App Features:
 
-**2.** Update `MONGODB_URI` and `MONGODB_DB` in `.env`.
+**Sign in page:**<br>
+![alt text](images/login.png)
+
+**Sidebar of Pages:**<br>
+![alt text](images/sidebar.png)
+
+**Current books page and features:**<br>
+![alt text](images/currentbooks.png)
+
+**Up next page:**<br>
+![alt text](images/UpNext.png)
+
+**Finished Books page:**<br>
+![alt text](images/FinishedBooks.png)
+
+**MongoDB:**<br>
+![alt text](images/UpNext.png)
 
 ___
 

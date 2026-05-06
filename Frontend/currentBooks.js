@@ -81,6 +81,8 @@ document.getElementById('finish-btn').addEventListener('click', (e) => {
         finishDate: document.getElementById('finish-date').value,
         rating: selectedRating,
         review: document.getElementById('finish-review').value,
+        cover_image: book.cover_image || null,
+
     };
 
     const xhrPost = new XMLHttpRequest();
@@ -96,6 +98,7 @@ document.getElementById('finish-btn').addEventListener('click', (e) => {
             };
             xhrDelete.open('DELETE', api + '/' + bookIdToFinish, true);
             xhrDelete.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            setAuthHeader(xhrDelete);
             xhrDelete.send();
         } else {
             msgDiv.innerHTML = 'Something went wrong saving to Finished Books. Please try again.';
@@ -104,12 +107,28 @@ document.getElementById('finish-btn').addEventListener('click', (e) => {
 
     xhrPost.open('POST', finishedApi, true);
     xhrPost.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhrPost);
     xhrPost.send(JSON.stringify(finishedBook));
 });
 
 // ── Download ──────────────────────────────────────────────────────────────────
 document.getElementById('download-btn').addEventListener('click', () => {
-    window.location.href = api + '/download';
+    fetch(api + '/download', {
+        headers: getAuthHeaders(),
+    }).then((response) => {
+        handleAuthError(response.status);
+        if (!response.ok) throw new Error('Download failed');
+        return response.blob();
+    }).then((blob) => {
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = 'current_books.json';
+        link.click();
+        URL.revokeObjectURL(downloadUrl);
+    }).catch(() => {
+        alert('Unable to download your current books.');
+    });
 });
 // -- Upload ───────────────────────────────────────────────────────────────────
 document.getElementById('upload-btn').addEventListener('click', () => {
@@ -154,6 +173,7 @@ document.getElementById('upload-file').addEventListener('change', (e) => {
 
         xhr.open('POST', api + '/upload', true);
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        setAuthHeader(xhr);
         xhr.send(JSON.stringify(uploadedBooks));
     };
 
@@ -207,15 +227,16 @@ document.getElementById('add-btn').addEventListener('click', (e) => {
 
     xhr.open('POST', api, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send(JSON.stringify({
         title: titleInput.value,
-        genre: genreInput.value,
+        genre: genreInput.value || null,
         author: authorInput.value,
         startDate: startDateInput.value,
-        publish_date: publish_dateInput.value,
-        isbn: isbnInput.value,
-        num_pages: parseInt(num_pagesInput.value),
-        current_page: parseInt(current_pageInput.value)
+        publish_date: publish_dateInput.value || null,
+        isbn: isbnInput.value || null,
+        num_pages: num_pagesInput.value ? parseInt(num_pagesInput.value) : null,
+        current_page: current_pageInput.value ? parseInt(current_pageInput.value) : null
     }));
 });
 
@@ -263,15 +284,16 @@ document.getElementById('edit-btn').addEventListener('click', (e) => {
 
     xhr.open('PUT', api + '/' + bookIdInEdit, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send(JSON.stringify({
         title: titleInput.value,
-        genre: genreInput.value,
+        genre: genreInput.value || null,
         author: authorInput.value,
         startDate: startDateInput.value,
-        publish_date: publish_dateInput.value,
-        isbn: isbnInput.value,
-        num_pages: parseInt(num_pagesInput.value),
-        current_page: parseInt(current_pageInput.value)
+        publish_date: publish_dateInput.value || null,
+        isbn: isbnInput.value || null,
+        num_pages: num_pagesInput.value ? parseInt(num_pagesInput.value) : null,
+        current_page: current_pageInput.value ? parseInt(current_pageInput.value) : null
     }));
 });
 
@@ -287,6 +309,7 @@ function deleteBook(id) {
 
     xhr.open('DELETE', api + '/' + id, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    setAuthHeader(xhr);
     xhr.send();
 }
 
@@ -306,7 +329,36 @@ function setBookInEdit(id) {
     document.getElementById('current_pageEdit').value = book.current_page || '';
 }
 
-// ── Render current books ──────────────────────────────────────────────────────
+// ── Upload cover image ────────────────────────────────────────────────────────
+function uploadCover(bookId) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+        const file = input.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const updated = JSON.parse(xhr.response);
+                const book = data.find(x => x._id == bookId);
+                if (book) book.cover_image = updated.cover_image;
+                renderCurrentBooks(data);
+            } else {
+                alert('Failed to upload cover image.');
+            }
+        };
+        xhr.open('POST', api + '/' + bookId + '/cover', true);
+        setAuthHeader(xhr);
+        xhr.send(formData);
+    };
+    input.click();
+}
+
 function renderCurrentBooks(data) {
     data.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
     const bookDiv = document.getElementById('books');
@@ -322,48 +374,60 @@ function renderCurrentBooks(data) {
     }
 
     data.forEach(book => {
+        const coverHtml = book.cover_image
+            ? `<img src="${book.cover_image}" alt="Cover" class="book-cover" />`
+            : `<div class="book-cover-placeholder">📖</div>`;
+
         bookDiv.innerHTML += `
         <div id="book-${book._id}" class="book-card">
-            <div class="book-title">${book.title}</div>
-            <div class="book-meta">
-                <div class="book-meta-row">
-                    <span class="meta-label">Author</span>
-                    <span class="meta-value">${book.author || '—'}</span>
-                </div>
-                <div class="book-meta-row">
-                    <span class="meta-label">Genre</span>
-                    <span class="meta-value">${book.genre || '—'}</span>
-                </div>
-                <div class="book-meta-row">
-                    <span class="meta-label">Pages</span>
-                    <span class="meta-value">${book.num_pages || '—'}</span>
-                </div>
-                <div class="book-meta-row">
-                    <span class="meta-label">ISBN</span>
-                    <span class="meta-value">${book.isbn || '—'}</span>
-                </div>
-                <div class="book-meta-row">
-                    <span class="meta-label">Published</span>
-                    <span class="meta-value">${formatDate(book.publish_date)}</span>
-                </div>
-                <div class="book-meta-row">
-                    <span class="meta-label">Started</span>
-                    <span class="meta-value">${formatDate(book.startDate)}</span>
-                </div>
+            <div class="book-cover-wrap">
+                ${coverHtml}
+                <button class="cover-upload-btn" onclick="uploadCover('${book._id}')">
+                    📷 ${book.cover_image ? 'Change' : 'Add Cover'}
+                </button>
             </div>
-            <div class="book-actions">
-                <button class="action-btn edit"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modal-edit"
-                    onclick="setBookInEdit('${book._id}')">
-                    Edit
-                </button>
-                <button class="action-btn delete" onclick="deleteBook('${book._id}')">
-                    Delete
-                </button>
-                <button class="action-btn finish" onclick="openFinishModal('${book._id}')">
-                    Mark as Finished
-                </button>
+            <div class="book-card-content">
+                <div class="book-title">${book.title}</div>
+                <div class="book-meta">
+                    <div class="book-meta-row">
+                        <span class="meta-label">Author</span>
+                        <span class="meta-value">${book.author || '—'}</span>
+                    </div>
+                    <div class="book-meta-row">
+                        <span class="meta-label">Genre</span>
+                        <span class="meta-value">${book.genre || '—'}</span>
+                    </div>
+                    <div class="book-meta-row">
+                        <span class="meta-label">Pages</span>
+                        <span class="meta-value">${book.num_pages || '—'}</span>
+                    </div>
+                    <div class="book-meta-row">
+                        <span class="meta-label">ISBN</span>
+                        <span class="meta-value">${book.isbn || '—'}</span>
+                    </div>
+                    <div class="book-meta-row">
+                        <span class="meta-label">Published</span>
+                        <span class="meta-value">${formatDate(book.publish_date)}</span>
+                    </div>
+                    <div class="book-meta-row">
+                        <span class="meta-label">Started</span>
+                        <span class="meta-value">${formatDate(book.startDate)}</span>
+                    </div>
+                </div>
+                <div class="book-actions">
+                    <button class="action-btn edit"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-edit"
+                        onclick="setBookInEdit('${book._id}')">
+                        Edit
+                    </button>
+                    <button class="action-btn delete" onclick="deleteBook('${book._id}')">
+                        Delete
+                    </button>
+                    <button class="action-btn finish" onclick="openFinishModal('${book._id}')">
+                        Mark as Finished
+                    </button>
+                </div>
             </div>
         </div>`;
     });
@@ -376,9 +440,12 @@ function getAllBooks() {
         if (xhr.status == 200) {
             data = JSON.parse(xhr.response) || [];
             renderCurrentBooks(data);
+        } else {
+            handleAuthError(xhr.status);
         }
     };
     xhr.open('GET', api, true);
+    setAuthHeader(xhr);
     xhr.send();
 }
 
